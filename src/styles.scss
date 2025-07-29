@@ -1,1 +1,112 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@include mat.core();
+
+$erp-financeiro-frontend-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+$custom-primary: (
+  50: #e0f2f2,
+  100: #b3e0e0,
+  200: #80cdcd,
+  300: #4dc2c2,
+  400: #26b9b9,
+  500: #00aaaa, // O 500 é sua cor principal #3FAAAA
+  600: #009999,
+  700: #008888,
+  800: #007777,
+  900: #005555,
+  A100: #ffffff,
+  A200: #ffffff,
+  A400: #ffffff,
+  A700: #ffffff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff, // Contraste branco para sua cor principal
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  )
+);
+$custom-accent: (
+  50: #fce4ec,
+  100: #f8bbd0,
+  200: #f48fb1,
+  300: #f06292,
+  400: #ec407a,
+  500: #e91e63,
+  600: #d81b60,
+  700: #c2185b,
+  800: #ad1457,
+  900: #880e4f,
+  A100: #ff80ab,
+  A200: #ff4081,
+  A400: #f50057,
+  A700: #c51162,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #ffffff,
+    A700: #ffffff,
+  )
+);
+
+:root {
+  @include mat.all-component-themes($erp-financeiro-frontend-theme);
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+

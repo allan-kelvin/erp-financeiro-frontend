@@ -1,0 +1,113 @@
+<div class="cartoes-container">
+  <div class="header">
+    <h1 class="title">Cartões</h1>
+    <button mat-raised-button color="primary" class="add-button" (click)="addCard()">
+      <mat-icon>add</mat-icon> Adicionar
+    </button>
+  </div>
+
+  <div class="filters-panel mat-elevation-z2">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>ID</mat-label>
+      <input matInput formControlName="id" placeholder="Buscar por ID" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Descrição</mat-label>
+      <input matInput formControlName="descricao" placeholder="Buscar por Descrição" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Tipo Cartão</mat-label>
+      <mat-select formControlName="tipoCartao">
+        <mat-option value="">Todos</mat-option>
+        <mat-option *ngFor="let type of cardTypes" [value]="type">{{ type }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Bandeira</mat-label>
+      <mat-select formControlName="bandeira">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let brand of cardBrands" [value]="brand">{{ brand }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="accent" class="search-button" (click)="applyFilters()">
+      <mat-icon>search</mat-icon> Buscar
+    </button>
+    <button mat-flat-button class="clear-button" (click)="clearFilters()">
+      <mat-icon>clear</mat-icon> Limpar
+    </button>
+  </div>
+
+  <div class="table-container mat-elevation-z2">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+
+      <!-- Bandeira Column -->
+      <ng-container matColumnDef="bandeira">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Bandeira </th>
+        <td mat-cell *matCellDef="let element"> {{element.bandeira}} </td>
+      </ng-container>
+
+      <!-- Descrição Column -->
+      <ng-container matColumnDef="descricao">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Descrição </th>
+        <td mat-cell *matCellDef="let element"> {{element.descricao}} </td>
+      </ng-container>
+
+      <!-- Tipo Cartão Column -->
+      <ng-container matColumnDef="tipo_cartao">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Cartão </th>
+        <td mat-cell *matCellDef="let element"> {{element.tipo_cartao}} </td>
+      </ng-container>
+
+      <!-- Cartão (Imagem) Column -->
+      <ng-container matColumnDef="imagem_cartao">
+        <th mat-header-cell *matHeaderCellDef> Cartão </th>
+        <td mat-cell *matCellDef="let element">
+          <img *ngIf="element.imagem_cartao" [src]="element.imagem_cartao" alt="Imagem do Cartão" class="card-image" />
+          <mat-icon *ngIf="!element.imagem_cartao" class="no-image-icon">credit_card</mat-icon>
+        </td>
+      </ng-container>
+
+      <!-- Ativo Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Ativo </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon *ngIf="element.status === 'Ativo'" class="status-icon active-icon">check_circle</mat-icon>
+          <mat-icon *ngIf="element.status === 'Inativo'" class="status-icon inactive-icon">cancel</mat-icon>
+        </td>
+      </ng-container>
+
+      <!-- Ações Column -->
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef> Ações </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="editCard(element.id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteCard(element.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="7">Nenhum cartão encontrado correspondente à sua busca.</td>
+      </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

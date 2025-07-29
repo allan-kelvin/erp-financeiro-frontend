@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+// Definir as cores customizadas
+$erp-primary: #3FAAAA; // Verde Água/Ciano
+$erp-dark-background: #052D2D; // Verde Escuro/Ciano Escuro
+$erp-light-background: #F9F6F6; // Cinza Claro
+$erp-white: #FFFFFF;
+
+:host {
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  height: 100vh; // Garante que o dashboard ocupe toda a altura da viewport
+  overflow: hidden; // Evita barras de rolagem indesejadas no layout principal
+}
+
+h4{
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.dashboard-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.dashboard-sidebar {
+  width: 16rem; // Largura fixa da sidebar (256px)
+  background-color: $erp-primary;
+  color: $erp-white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); // Sombra para dar profundidade
+  border-top-right-radius: 0.5rem; // Cantos arredondados
+  border-bottom-right-radius: 0.5rem; // Cantos arredondados
+}
+
+.sidebar-header {
+  height: 5rem; // Altura do cabeçalho da sidebar (80px)
+  background-color: $erp-dark-background;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 0.5rem; // Cantos arredondados
+}
+
+.sidebar-logo {
+  height: 3rem; // Altura do logo (48px)
+  width: auto;
+}
+
+.sidebar-nav {
+  flex: 1; // Ocupa o espaço restante verticalmente
+  padding: 1rem; // Padding interno
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem; // Padding para os itens de navegação
+  margin-bottom: 0.75rem; // Espaçamento entre os itens
+  color: $erp-white;
+  text-decoration: none;
+  border-radius: 0.5rem; // Cantos arredondados
+  transition: background-color 0.2s ease-in-out; // Transição suave no hover
+  font-weight: 500; // Peso da fonte padrão
+}
+
+.nav-icon {
+  // Estilo para os ícones do Material
+  font-size: 1.25rem; // Tamanho do ícone (20px)
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  display: flex; // Garante que o ícone seja centralizado verticalmente
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-link:hover {
+  background-color: rgba($erp-dark-background, 0.3); // Fundo semi-transparente no hover
+}
+
+.nav-link.active { // Estilo para o link ativo (routerLinkActive)
+  background-color: rgba($erp-dark-background, 0.5); // Fundo semi-transparente mais forte para ativo
+  font-weight: 600; // Peso da fonte mais forte para ativo
+  color: $erp-white;
+}
+
+.sidebar-footer {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.75rem; // Tamanho da fonte pequeno
+  color: lighten($erp-primary, 20%); // Cor mais clara para o texto do rodapé
+  border-top: 1px solid darken($erp-primary, 10%); // Borda superior
+}
+
+.dashboard-main-content {
+  flex: 1; // Ocupa o espaço restante horizontalmente
+  display: flex;
+  flex-direction: column;
+}
+
+.main-header {
+  height: 4rem; // Altura do cabeçalho principal (64px)
+  background-color: $erp-dark-background;
+  color: $erp-white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Sombra
+  border-bottom-left-radius: 0.5rem; // Cantos arredondados
+}
+
+.main-header h1 {
+  font-size: 1.5rem; // Tamanho do título (24px)
+  font-weight: 600;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon {
+  font-size: 1.5rem; // Tamanho do ícone de usuário (24px)
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-info span {
+  font-weight: 500;
+}
+
+.logout-button {
+  margin-left: 1rem;
+  padding: 0.5rem;
+  background-color: #dc2626; // Cor vermelha para o botão de logout
+  color: $erp-white;
+  border-radius: 9999px; // Botão totalmente arredondado
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-icon {
+  font-size: 1rem; // Tamanho do ícone de logout (16px)
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-button:hover {
+  background-color: darken(#dc2626, 10%);
+}
+
+.page-content {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: $erp-light-background;
+  overflow: auto;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.main-footer {
+  height: 2.5rem;
+  background-color: $erp-dark-background;
+  color: $erp-white;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-top-left-radius: 0.5rem;
+}

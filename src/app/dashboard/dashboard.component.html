@@ -1,0 +1,63 @@
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <img src="LogoMarca.png" alt="Logo ERP Financeiro" class="sidebar-logo" />
+      <h4>ERP Financeiro</h4>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        <mat-icon class="nav-icon">dashboard</mat-icon> <!-- Ícone Material para Dashboard -->
+        Dashboard
+      </a>
+      <a routerLink="/cartoes" routerLinkActive="active" class="nav-link">
+        <mat-icon class="nav-icon">credit_card</mat-icon> <!-- Ícone Material para Cartões -->
+        Cartões
+      </a>
+      <a routerLink="/dividas" routerLinkActive="active" class="nav-link">
+        <mat-icon class="nav-icon">money_off</mat-icon> <!-- Ícone Material para Dívidas (ou similar) -->
+        Dívidas
+      </a>
+      <a routerLink="/contas-a-pagar" routerLinkActive="active" class="nav-link">
+        <mat-icon class="nav-icon">receipt_long</mat-icon> <!-- Ícone Material para Contas a Pagar (ou similar) -->
+        Contas a Pagar
+      </a>
+      <a routerLink="/relatorios" routerLinkActive="active" class="nav-link">
+        <mat-icon class="nav-icon">bar_chart</mat-icon> <!-- Ícone Material para Relatórios -->
+        Relatórios
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      v1.0.0
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="dashboard-main-content">
+    <!-- Header/Top Bar -->
+    <header class="main-header">
+      <h1>Dashboard</h1>
+      <div class="user-info">
+        <mat-icon class="user-icon">person</mat-icon> <!-- Ícone Material para Usuário -->
+        <span>User</span>
+        <button (click)="logout()" class="logout-button">
+          <mat-icon class="logout-icon">logout</mat-icon> <!-- Ícone Material para Logout -->
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <section class="page-content">
+      <!-- Conteúdo específico do dashboard será carregado aqui -->
+      <router-outlet></router-outlet>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <span>© 2025 Financeiro ERP. Todos os direitos reservados.</span>
+      <span>Financeiro</span>
+    </footer>
+  </main>
+</div>

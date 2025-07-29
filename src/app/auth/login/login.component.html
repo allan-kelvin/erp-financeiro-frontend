@@ -1,0 +1,52 @@
+<div class="login-background">
+  <div class="login-container">
+    <!-- Logotipo -->
+    <img src="LogoMarca.png" alt="Logo ERP Financeiro" class="login-logo" />
+    <!-- Formulário de Login -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Campo de E-mail -->
+      <mat-form-field appearance="outline" class="full-width-field">
+        <mat-label>E-mail</mat-label>
+        <mat-icon matPrefix class="input-icon-color">email</mat-icon> <!-- Ícone de e-mail -->
+        <input matInput type="email" formControlName="email" placeholder="Seu e-mail" />
+        <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">E-mail é obrigatório.</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">E-mail inválido.</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Campo de Senha -->
+      <mat-form-field appearance="outline" class="full-width-field">
+        <mat-label>Senha</mat-label>
+        <mat-icon matPrefix class="input-icon-color">lock</mat-icon> <!-- Ícone de cadeado -->
+        <input matInput type="password" formControlName="password" placeholder="Sua senha" />
+        <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Senha é obrigatória.</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">A senha deve ter no mínimo 6 caracteres.</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Botão Entrar -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="login-button"
+        [disabled]="loginForm.invalid"
+      >
+        ENTRAR
+      </button>
+    </form>
+
+    <!-- Links de Recuperação/Registro -->
+    <div class="login-links">
+      <a href="#" class="login-link">Esqueceu a senha?</a>
+      <a href="#" class="login-link">Cadastrar</a>
+    </div>
+
+    <!-- Mensagem de erro do login -->
+    <div *ngIf="errorMessage" class="server-error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

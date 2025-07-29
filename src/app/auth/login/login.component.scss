@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$erp-primary: #3FAAAA; // Verde Água/Ciano
+$erp-dark-background: #052D2D; // Verde Escuro
+$erp-light-background: #F9F6F6; // Cinza Claro
+$erp-white: #FFFFFF;
+
+:host {
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background-image: url('./assets/login-fundo.png'); /* Verifique o caminho da imagem */
+  background-size: cover;
+  background-position: center;
+}
+
+.login-background {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.login-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  margin: 1rem;
+  background-color: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+  backdrop-filter: blur(8px); /* Efeito de blur */
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 448px;
+  box-sizing: border-box;
+}
+
+.login-logo {
+  height: 6rem;
+  width: auto;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+
+}
+
+.full-width-field {
+  width: 100%;
+
+  .mat-mdc-form-field-flex {
+    border-radius: 9999px; // Arredonda o campo inteiro
+    background-color: $erp-white; // Fundo branco para os inputs
+    padding: 0 1rem; // Padding interno para o ícone
+  }
+
+  .mat-mdc-text-field-wrapper {
+    padding: 0 !important; // Remove padding padrão do wrapper para controlar com o flex
+  }
+
+  .mat-mdc-form-field-outline-start,
+  .mat-mdc-form-field-outline-gap,
+  .mat-mdc-form-field-outline-end {
+    border-radius: 9999px !important; // Garante que o contorno também seja arredondado
+  }
+
+  .mat-mdc-form-field-input-control {
+    padding-left: 1.5rem; // Ajusta o padding para o texto após o ícone
+    color: #2d3748; // Cor do texto de input
+  }
+
+  // Cor dos ícones prefixos
+  .mat-mdc-form-field-prefix .mat-icon {
+    color: #a0aec0; // Cor cinza para os ícones
+  }
+
+  // Cor do placeholder/label
+  .mat-mdc-form-field-label {
+    color: #a0aec0; // Cor cinza para o label
+    padding-left: 1.5rem; // Ajusta a posição do label
+  }
+
+  // Ajuste do padding da label quando está flutuando (input com valor)
+  .mat-mdc-form-field:not(.mat-form-field-no-animations).mat-form-field-outline .mat-mdc-form-field-label.mdc-floating-label--float:not(.mat-form-field-hide-placeholder) {
+    transform: translateY(-50%) scale(0.75) !important; // Ajusta a posição da label flutuante
+    padding-left: 1rem;
+  }
+
+  // Estilo para o campo em foco
+  &.mat-focused {
+    .mat-mdc-form-field-flex {
+      box-shadow: 0 0 0 2px rgba(63, 170, 170, 0.5); // Sombra ao focar
+    }
+    .mat-mdc-form-field-outline-thick {
+      color: $erp-primary !important; // Cor do contorno ao focar
+    }
+  }
+
+  // Estilo para campo inválido
+  &.mat-form-field-invalid {
+    .mat-mdc-form-field-outline-thick {
+      color: #ef4444 !important; // Cor vermelha para contorno inválido
+    }
+    .mat-mdc-form-field-label {
+      color: #ef4444 !important; // Cor vermelha para label inválida
+    }
+    .input-icon-color {
+      color: #ef4444 !important; // Cor vermelha para ícone inválido
+    }
+  }
+}
+
+.login-button {
+  height: 3.5rem; // Altura do botão
+  border-radius: 9999px !important; // Arredonda o botão
+  font-weight: 700;
+  font-size: 1.125rem; // Tamanho da fonte
+  background-color: $erp-primary; // Cor primária
+  color: $erp-white; // Cor do texto do botão
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: darken($erp-primary, 10%); // Escurece no hover
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  &:disabled {
+    background-color: lighten($erp-primary, 20%) !important;
+    color: $erp-white !important;
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.login-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.login-link {
+  color: $erp-white;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  margin: 0 0.5rem; // Espaçamento entre os links
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+.server-error-message {
+  margin-top: 1rem;
+  color: #fca5a5; // Vermelho claro para erros
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Estilos para o ícone do Material Design no input */
+.input-icon-color {
+  color: #a0aec0; // Garante a cor cinza para os ícones
+}
