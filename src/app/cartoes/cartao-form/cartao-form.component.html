@@ -1,0 +1,79 @@
+<div class="card-form-container">
+  <div class="header">
+    <h1 class="title">{{ isEditMode ? 'Editar Cartão' : 'Novo Cartão' }}</h1>
+  </div>
+
+  <div class="form-panel mat-elevation-z2">
+    <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
+      <div class="form-content">
+        <!-- Área de Adicionar Imagem -->
+        <div class="image-upload-area">
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none;" />
+          <div class="image-preview" (click)="fileInput.click()">
+            <img *ngIf="cardImagePreview" [src]="cardImagePreview" alt="Pré-visualização do Cartão" />
+            <mat-icon *ngIf="!cardImagePreview" class="upload-icon">add_a_photo</mat-icon>
+            <span *ngIf="!cardImagePreview" class="upload-text">Adicionar Imagem</span>
+          </div>
+          <button mat-stroked-button color="primary" (click)="fileInput.click()" class="upload-button">
+            <mat-icon>upload_file</mat-icon> Selecionar Imagem
+          </button>
+          <button *ngIf="cardImagePreview" mat-stroked-button color="warn" (click)="removeImage()" class="remove-image-button">
+            <mat-icon>delete</mat-icon> Remover Imagem
+          </button>
+        </div>
+
+        <div class="form-fields">
+          <!-- Campo Descrição -->
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label>Descrição</mat-label>
+            <input matInput formControlName="descricao" placeholder="Ex: Cartão Nubank" />
+            <mat-error *ngIf="cardForm.get('descricao')?.invalid && cardForm.get('descricao')?.touched">
+              Descrição é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Campo Bandeira -->
+          <mat-form-field appearance="outline" class="form-field-half">
+            <mat-label>Bandeira</mat-label>
+            <mat-select formControlName="bandeira">
+              <mat-option *ngFor="let brand of cardBrands" [value]="brand">{{ brand }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="cardForm.get('bandeira')?.invalid && cardForm.get('bandeira')?.touched">
+              Bandeira é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Campo Tipo Cartão -->
+          <mat-form-field appearance="outline" class="form-field-half">
+            <mat-label>Tipo Cartão</mat-label>
+            <mat-select formControlName="tipo_cartao">
+              <mat-option *ngFor="let type of cardTypes" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="cardForm.get('tipo_cartao')?.invalid && cardForm.get('tipo_cartao')?.touched">
+              Tipo de Cartão é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Campo Ativo -->
+          <mat-form-field appearance="outline" class="form-field-half">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of cardStatuses" [value]="status">{{ status }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="cardForm.get('status')?.invalid && cardForm.get('status')?.touched">
+              Status é obrigatório.
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button mat-stroked-button color="basic" type="button" (click)="goBack()">Voltar</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="cardForm.invalid">
+          {{ isEditMode ? 'Salvar' : 'Cadastrar' }}
+        </button>
+        <button mat-stroked-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

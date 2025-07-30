@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$erp-dark-background: #052D2D; // Verde Escuro/Ciano Escuro
+$erp-white: #FFFFFF;
+
+:host {
+  font-family: 'Inter', sans-serif;
+}
+
+.main-header {
+  height: 5rem;
+  background-color: $erp-dark-background;
+  color: $erp-white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 0.5rem;
+}
+
+.main-header h1 {
+  font-size: 1.5rem; // Tamanho do título (24px)
+  font-weight: 600;
+  margin: 0; // Remove margem padrão do h1
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon {
+  font-size: 1.5rem; // Tamanho do ícone de usuário (24px)
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-info span {
+  font-weight: 500;
+}
+
+.logout-button {
+  margin-left: 1rem;
+  padding: 0.5rem;
+  background-color: #dc2626; // Cor vermelha para o botão de logout
+  color: $erp-white;
+  border-radius: 9999px; // Botão totalmente arredondado
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-icon {
+  font-size: 1rem; // Tamanho do ícone de logout (16px)
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-button:hover {
+  background-color: darken(#dc2626, 10%);
+}

@@ -9,19 +9,26 @@ import { Cartao } from "../models/cartao.model";
   providedIn: 'root'
 })
 export class CartoesService {
-  private apiUrl = `${environment.apiUrl}/cartoes`; // URL base para a API de cartões
+  private apiUrl = `${environment.apiUrl}/cartoes`;
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService // Injete o AuthService para obter o token
+    private authService: AuthService
   ) { }
 
-  private getAuthHeaders(): HttpHeaders {
+  private getAuthHeaders(contentType?: string): HttpHeaders {
     const token = this.authService.getToken();
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
+    let headers = new HttpHeaders();
+
+    if (contentType !== undefined) {
+      headers = headers.set('Content-Type', contentType);
+    }
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
   }
 
   /**
@@ -55,9 +62,11 @@ export class CartoesService {
    * @param cartao Os dados do cartão a ser criado.
    * @returns Um Observable com o cartão criado.
    */
-  createCartao(cartao: Cartao): Observable<Cartao> {
-    return this.http.post<Cartao>(this.apiUrl, cartao, { headers: this.getAuthHeaders() });
+  createCartao(formData: FormData): Observable<Cartao> {
+    // Não defina 'Content-Type' para FormData, o navegador faz isso automaticamente
+    return this.http.post<Cartao>(this.apiUrl, formData, { headers: this.getAuthHeaders(undefined) });
   }
+
 
   /**
    * Atualiza um cartão existente.
@@ -65,8 +74,8 @@ export class CartoesService {
    * @param cartao Os dados atualizados do cartão.
    * @returns Um Observable com o cartão atualizado.
    */
-  updateCartao(id: number, cartao: Cartao): Observable<Cartao> {
-    return this.http.patch<Cartao>(`${this.apiUrl}/${id}`, cartao, { headers: this.getAuthHeaders() });
+  updateCartao(id: number, formData: FormData): Observable<Cartao> {
+    return this.http.patch<Cartao>(`${this.apiUrl}/${id}`, formData, { headers: this.getAuthHeaders(undefined) });
   }
 
   /**
@@ -76,5 +85,9 @@ export class CartoesService {
    */
   deleteCartao(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
+  }
+
+  findAll(): Observable<Cartao[]> {
+    return this.http.get<Cartao[]>(this.apiUrl);
   }
 }

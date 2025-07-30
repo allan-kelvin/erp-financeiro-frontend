@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$erp-white: #FFFFFF;
+$erp-light-teal: #AECCCC;
+$erp-dark-gray: #111010;
+$erp-primary: #3FAAAA;
+$erp-dark-background: #052D2D;
+$erp-very-dark-gray: #141313;
+$erp-light-background: #F9F5F5; // Fundo da página
+
+:host {
+  font-family: 'Inter', sans-serif;
+  display: block;
+  padding: 1.5rem;
+  background-color: $erp-light-background;
+  min-height: calc(100vh - 4rem - 2.5rem - 3rem); // Altura da tela - header - footer - padding
+}
+
+.card-form-container {
+  max-width: 900px; // Largura máxima do container do formulário
+  margin: 0 auto; // Centraliza o container
+}
+
+.header {
+  margin-bottom: 1.5rem;
+
+  .title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: $erp-dark-background;
+    margin: 0;
+  }
+}
+
+.form-panel {
+  background-color: $erp-white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.form-content {
+  display: flex;
+  gap: 2rem; // Espaçamento entre a área da imagem e os campos do formulário
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column; // Empilha em telas menores
+  }
+}
+
+.image-upload-area {
+  flex-shrink: 0; // Não deixa a área de imagem encolher
+  width: 200px; // Largura fixa para a área da imagem
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  .image-preview {
+    width: 180px;
+    height: 180px;
+    border: 2px dashed $erp-light-teal;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden; // Garante que a imagem não transborde
+    background-color: #f0f0f0; // Fundo leve para a área de preview
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; // Corta a imagem para preencher a área
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      color: $erp-light-teal;
+    }
+
+    .upload-text {
+      font-size: 0.9rem;
+      color: $erp-light-teal;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .upload-button, .remove-image-button {
+    width: 100%;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.form-fields {
+  flex-grow: 1; // Ocupa o espaço restante
+  display: flex;
+  flex-wrap: wrap; // Permite que os campos quebrem linha
+  gap: 1.5rem; // Espaçamento entre os campos
+
+  .full-width-field {
+    width: 100%;
+  }
+
+  .form-field-half {
+    flex: 1 1 calc(50% - 0.75rem); // Ocupa metade da largura com espaçamento
+    min-width: 200px; // Garante que não fique muito pequeno
+  }
+
+  // Estilos para os campos do Angular Material
+  .mat-mdc-form-field-flex {
+    border-radius: 0.25rem; // Bordas levemente arredondadas
+    background-color: $erp-light-background; // Fundo do input
+  }
+
+  .mat-mdc-form-field-input-control {
+    color: $erp-dark-gray; // Cor do texto do input
+  }
+
+  .mat-mdc-form-field-label {
+    color: #777; // Cor da label/placeholder
+  }
+
+  .mat-mdc-form-field-outline-thick {
+    color: $erp-primary !important; // Cor do contorno ao focar
+  }
+
+  &.mat-focused {
+    .mat-mdc-form-field-outline-thick {
+      color: $erp-primary !important;
+    }
+  }
+
+  &.mat-form-field-invalid {
+    .mat-mdc-form-field-outline-thick {
+      color: #F44336 !important; // Vermelho para inválido
+    }
+    .mat-mdc-form-field-label {
+      color: #F44336 !important;
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end; // Alinha os botões à direita
+  gap: 1rem; // Espaçamento entre os botões
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee; // Borda superior para separar do formulário
+
+  button {
+    min-width: 120px;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-raised-button[color="primary"] {
+    background-color: $erp-primary;
+    color: $erp-white;
+    &:hover {
+      background-color: darken($erp-primary, 10%);
+    }
+  }
+
+  .mat-stroked-button[color="basic"] {
+    border-color: $erp-light-teal;
+    color: $erp-dark-gray;
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .mat-stroked-button[color="warn"] {
+    border-color: #F44336;
+    color: #F44336;
+    &:hover {
+      background-color: #ffebee;
+    }
+  }
+}

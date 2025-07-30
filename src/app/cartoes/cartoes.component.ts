@@ -41,6 +41,7 @@ export class CartoesComponent implements OnInit, AfterViewInit {
   // Enums para os selects de filtro
   cardBrands = Object.values(BandeiraEnum);
   cardTypes = Object.values(TipoCartaoEnum);
+  cardStatuses = Object.values(StatusCartaoEnum);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -71,30 +72,17 @@ export class CartoesComponent implements OnInit, AfterViewInit {
    * Carrega os cartões do backend, aplicando filtros se houver.
    */
   loadCards(): void {
-    // Aqui você chamaria o serviço do backend para buscar os cartões
-    // Por enquanto, usaremos dados mockados para o layout
     const filters = this.filterForm.value;
-    console.log('Aplicando filtros:', filters);
 
-    const mockData: Cartao[] = [
-      { id: 1, descricao: 'Nubank', bandeira: BandeiraEnum.MASTERCARD, tipo_cartao: TipoCartaoEnum.CREDITO, imagem_cartao: 'assets/nubank.png', status: StatusCartaoEnum.ATIVO, usuarioId: 1, created_at: new Date(), updated_at: new Date() },
-      { id: 2, descricao: 'Inter', bandeira: BandeiraEnum.VISA, tipo_cartao: TipoCartaoEnum.DEBITO, imagem_cartao: 'assets/inter.png', status: StatusCartaoEnum.ATIVO, usuarioId: 1, created_at: new Date(), updated_at: new Date() },
-      { id: 3, descricao: 'C6 Bank', bandeira: BandeiraEnum.MASTERCARD, tipo_cartao: TipoCartaoEnum.CREDITO, imagem_cartao: 'assets/c6bank.png', status: StatusCartaoEnum.INATIVO, usuarioId: 1, created_at: new Date(), updated_at: new Date() },
-      { id: 4, descricao: 'Bradesco', bandeira: BandeiraEnum.VISA, tipo_cartao: TipoCartaoEnum.CREDITO, imagem_cartao: undefined, status: StatusCartaoEnum.ATIVO, usuarioId: 1, created_at: new Date(), updated_at: new Date() },
-      { id: 5, descricao: 'Caixa', bandeira: BandeiraEnum.ELO, tipo_cartao: TipoCartaoEnum.DEBITO, imagem_cartao: undefined, status: StatusCartaoEnum.ATIVO, usuarioId: 1, created_at: new Date(), updated_at: new Date() },
-      { id: 6, descricao: 'Santander', bandeira: BandeiraEnum.MASTERCARD, tipo_cartao: TipoCartaoEnum.CREDITO, imagem_cartao: undefined, status: StatusCartaoEnum.ATIVO, usuarioId: 1, created_at: new Date(), updated_at: new Date() },
-    ];
-
-    // Aplica os filtros mockados
-    const filteredData = mockData.filter(card => {
-      const matchId = filters.id ? card.id.toString().includes(filters.id) : true;
-      const matchDescricao = filters.descricao ? card.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) : true;
-      const matchTipoCartao = filters.tipoCartao ? card.tipo_cartao === filters.tipoCartao : true;
-      const matchBandeira = filters.bandeira ? card.bandeira === filters.bandeira : true;
-      return matchId && matchDescricao && matchTipoCartao && matchBandeira;
+    // Aqui você pode adaptar caso queira aplicar filtros futuramente
+    this.cartoesService.findAll().subscribe({
+      next: (cartoes: Cartao[]) => {
+        this.dataSource.data = cartoes;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar cartões:', err);
+      }
     });
-
-    this.dataSource.data = filteredData;
   }
 
   /**
@@ -117,7 +105,7 @@ export class CartoesComponent implements OnInit, AfterViewInit {
    */
   addCard(): void {
     console.log('Navegar para tela de adicionar cartão');
-    this.router.navigate(['/cartoes/novo']); // Exemplo de rota
+    this.router.navigate(['/dashboard/cartoes/novo']); // Exemplo de rota
   }
 
   /**
