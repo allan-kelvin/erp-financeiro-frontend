@@ -1,32 +1,46 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthService } from '../auth/services/auth.service';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter, map } from 'rxjs/operators';
+import { HeaderComponent } from '../layout/header/header.component';
+import { SidebarComponent } from '../layout/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    RouterLinkActive,
     RouterOutlet,
-    MatIconModule
+    SidebarComponent,
+    HeaderComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
+  currentPageTitle: string = 'Dashboard';
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(() => {
+        let child = this.activatedRoute.firstChild;
+        while (child) {
+          if (child.firstChild) {
+            child = child.firstChild;
+          } else if (child.snapshot.data && child.snapshot.data['title']) {
+            return child.snapshot.data['title'];
+          } else {
+            return 'Dashboard';
+          }
+        }
+        return 'Dashboard';
+      })
+    ).subscribe((title: string) => {
+      this.currentPageTitle = title;
+    });
   }
 
 }

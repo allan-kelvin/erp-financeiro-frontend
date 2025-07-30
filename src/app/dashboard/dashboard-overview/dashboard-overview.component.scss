@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+// Definir as cores customizadas (replicadas para consistência)
+$erp-primary: #3FAAAA;
+$erp-dark-background: #052D2D;
+$erp-light-background: #F9F6F6;
+$erp-white: #FFFFFF;
+
+:host {
+  font-family: 'Inter', sans-serif;
+  display: block; // Garante que o container ocupe o espaço disponível
+  padding: 1.5rem; // Padding geral para o conteúdo da página
+}
+
+.overview-title {
+  font-size: 2rem; // Tamanho do título
+  font-weight: 600;
+  color: $erp-dark-background;
+  margin-bottom: 1rem;
+}
+
+.overview-text {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.overview-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); // Layout responsivo com cards
+  gap: 1.5rem; // Espaçamento entre os cards
+}
+
+.card {
+  background-color: $erp-white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Sombra leve
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: $erp-dark-background;
+    margin-bottom: 0.5rem;
+  }
+
+  .value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: $erp-primary;
+    margin-bottom: 1rem;
+  }
+
+  .card-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: $erp-primary;
+  }
+}
