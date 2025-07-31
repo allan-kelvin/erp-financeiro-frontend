@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+// Definir as cores customizadas
+$erp-white: #FFFFFF;
+$erp-light-teal: #AECCCC;
+$erp-dark-gray: #111010;
+$erp-primary: #3FAAAA;
+$erp-dark-background: #052D2D;
+$erp-very-dark-gray: #141313;
+$erp-light-background: #F9F5F5; // Fundo da página
+
+:host {
+  font-family: 'Inter', sans-serif;
+  display: block;
+  padding: 1.5rem;
+  background-color: $erp-light-background;
+  min-height: calc(100vh - 4rem - 2.5rem - 3rem);
+}
+
+#descricao{
+    margin: 0px 500px;
+}
+
+
+.debt-form-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+
+  .title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: $erp-dark-background;
+    margin: 0;
+  }
+}
+
+.form-panel {
+  background-color: $erp-white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $erp-dark-background;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem; // Espaçamento entre os campos na linha
+  margin-bottom: 1rem; // Espaçamento entre as linhas de campos
+
+  .full-width-field {
+    width: 100%;
+  }
+
+  .form-field-third {
+    flex: 1 1 calc(33.333% - 1rem); // 3 campos por linha
+    min-width: 180px;
+  }
+
+  .form-field-quarter {
+    flex: 1 1 calc(25% - 1.125rem); // 4 campos por linha
+    min-width: 150px;
+  }
+
+  // Estilos para os campos do Angular Material
+  .mat-mdc-form-field-flex {
+    border-radius: 0.25rem;
+    background-color: $erp-light-background;
+  }
+
+  .mat-mdc-form-field-input-control {
+    color: $erp-dark-gray;
+  }
+
+  .mat-mdc-form-field-label {
+    color: #777;
+  }
+
+  .mat-mdc-form-field-outline-thick {
+    color: $erp-primary !important;
+  }
+
+  &.mat-focused {
+    .mat-mdc-form-field-outline-thick {
+      color: $erp-primary !important;
+    }
+  }
+
+  &.mat-form-field-invalid {
+    .mat-mdc-form-field-outline-thick {
+      color: #F44336 !important;
+    }
+    .mat-mdc-form-field-label {
+      color: #F44336 !important;
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+
+  button {
+    min-width: 120px;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .mat-raised-button[color="primary"] {
+    background-color: $erp-primary;
+    color: $erp-white;
+    &:hover {
+      background-color: darken($erp-primary, 10%);
+    }
+  }
+
+  .mat-stroked-button[color="basic"] {
+    border-color: $erp-light-teal;
+    color: $erp-dark-gray;
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .mat-stroked-button[color="warn"] {
+    border-color: #F44336;
+    color: #F44336;
+    &:hover {
+      background-color: #ffebee;
+    }
+  }
+}

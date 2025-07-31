@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-// Definir as cores customizadas
 $erp-dark-background: #052D2D; // Verde Escuro/Ciano Escuro
 $erp-light-background: #F9F6F6; // Cinza Claro
 $erp-white: #FFFFFF;
@@ -29,7 +28,6 @@ $erp-white: #FFFFFF;
   padding: 1.5rem;
   background-color: $erp-light-background;
   overflow: auto;
-  border-bottom-left-radius: 0.5rem;
 }
 
 .main-footer {
@@ -42,5 +40,4 @@ $erp-white: #FFFFFF;
   justify-content: space-between;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-  border-top-left-radius: 0.5rem;
 }

@@ -6,17 +6,19 @@ $erp-white: #FFFFFF;
 
 :host {
   font-family: 'Inter', sans-serif;
+  height: 100vh; // Garante que o host do componente ocupe toda a altura
+  display: block;
 }
 
 .dashboard-sidebar {
   width: 16rem;
+  height: 100vh; // Força a sidebar a ocupar 100% da altura da tela
   background-color: $erp-primary;
   color: $erp-white;
   display: flex;
   flex-direction: column;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+  border-radius: 0; // Remove qualquer arredondamento
 }
 
 .sidebar-header {
@@ -25,7 +27,7 @@ $erp-white: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top-right-radius: 0.5rem;
+  border-radius: 0; // Remove o arredondamento superior
 }
 
 .sidebar-logo {
@@ -35,7 +37,6 @@ $erp-white: #FFFFFF;
 .sidebar-nav {
   flex: 1;
   padding: 1rem;
-  height: auto;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -73,9 +74,9 @@ $erp-white: #FFFFFF;
 }
 
 .sidebar-footer {
-  padding: 1rem;
+  padding: 0.45rem;
   text-align: center;
   font-size: 0.75rem;
-  color: lighten($erp-primary, 20%);
+  color: lighten(#FFFFFF, 20%);
   border-top: 1px solid darken($erp-primary, 10%);
 }
