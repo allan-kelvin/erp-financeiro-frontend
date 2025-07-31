@@ -9,7 +9,7 @@
         <!-- Campo Descrição -->
         <mat-form-field appearance="outline" class="full-width-field">
           <mat-label>Descrição</mat-label>
-          <input matInput formControlName="descricao" placeholder="Ex: Mensalidade da faculdade"  id="descricao"/>
+          <input matInput formControlName="descricao" placeholder="Ex: Mensalidade da faculdade"  id="descr"/>
           <mat-error *ngIf="debtForm.get('descricao')?.invalid && debtForm.get('descricao')?.touched">
             Descrição é obrigatória.
           </mat-error>
@@ -90,11 +90,9 @@
               Quantidade de Parcelas é obrigatória para dívidas parceladas.
             </mat-error>
           </mat-form-field>
-
-          <!-- Campo Valor Parcelas (Calculado e Bloqueado) -->
           <mat-form-field appearance="outline" class="form-field-quarter">
             <mat-label>Valor Parcelas</mat-label>
-            <input matInput [value]="debtForm.get('valor_parcela')?.value | currency:'BRL'" readonly />
+            <input matInput [value]="debtForm.get('valor_parcela')?.value | currency:'BRL'" />
           </mat-form-field>
         </div>
       </div>

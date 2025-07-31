@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core'; // Para o datepicker (módulo nativo)
 import { MatDatepickerModule } from '@angular/material/datepicker'; // Para o datepicker
@@ -34,7 +34,9 @@ import { DividasService } from '../services/dividas.service';
     MatNativeDateModule,
     MatSnackBarModule,
     DatePipe,
-    CurrencyPipe
+    CurrencyPipe,
+    FormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './divida-form.component.html',
   styleUrl: './divida-form.component.scss'
@@ -48,7 +50,7 @@ export class DividaFormComponent implements OnInit {
 
   debtTypes = Object.values(TipoDividaEnum);
   availableCards: Cartao[] = [];
-  installmentOptions: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 180, 360];
+  installmentOptions: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 95, 100, 120, 180, 360];
 
   isCardFieldEnabled: boolean = false;
   isParcelasFieldEnabled: boolean = false;
@@ -84,11 +86,11 @@ export class DividaFormComponent implements OnInit {
       tipo_divida: ['', Validators.required],
       cartaoId: [{ value: '', disabled: true }],
       data_lancamento: ['', Validators.required],
-      valor_total: ['', [Validators.required, Validators.min(0.01)]],
+      valor_total: [0, [Validators.required, Validators.min(0.01)]],
       parcelado: [false, Validators.required],
-      qtd_parcelas: [{ value: null, disabled: true }],
+      qtd_parcelas: [null],
       valor_parcela: [{ value: 0, disabled: true }],
-      juros_aplicado: [{ value: 0, disabled: true }],
+      juros_aplicado: [0],
       data_fim_parcela: [{ value: null, disabled: true }],
       qant_parcelas_restantes: ['']
     });
@@ -109,25 +111,36 @@ export class DividaFormComponent implements OnInit {
 
   onValorTotalBlur(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    const numericValue = this.debtForm.get('valor_total')?.value;
-    if (numericValue !== null && numericValue !== undefined) {
-      inputElement.value = this.currencyPipe.transform(numericValue, 'BRL', 'symbol', '1.2-2', 'pt') || '';
-    } else {
-      inputElement.value = this.currencyPipe.transform(0, 'BRL', 'symbol', '1.2-2', 'pt') || '';
-    }
+    const numericValue = this.debtForm.get('valor_total')?.value ?? 0;
+
+    inputElement.value = this.currencyPipe.transform(
+      numericValue,
+      'BRL',
+      'symbol',
+      '1.2-2',
+      'pt'
+    ) || '';
   }
 
   onValorTotalInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    let rawValue = inputElement.value.replace(/\D/g, '');
+    const rawValue = inputElement.value.replace(/\D/g, '');
 
-    if (rawValue.length > 0) {
-      if (rawValue.length === 1) rawValue = '00' + rawValue;
-      if (rawValue.length === 2) rawValue = '0' + rawValue;
+    if (rawValue) {
+      const paddedValue = rawValue.padStart(3, '0'); // garante ao menos 3 dígitos
+      const numericValue = parseFloat(paddedValue) / 100;
 
-      const numericValue = parseFloat(rawValue) / 100;
-      this.debtForm.get('valor_total')?.setValue(numericValue, { emitEvent: false }); // Atualiza o FormControl sem disparar valueChanges
-      inputElement.value = this.currencyPipe.transform(numericValue, 'BRL', 'symbol', '1.2-2', 'pt') || '';
+      // Atualiza o form sem emitir eventos desnecessários
+      this.debtForm.get('valor_total')?.setValue(numericValue, { emitEvent: false });
+
+      // Atualiza o valor no input com máscara BRL
+      inputElement.value = this.currencyPipe.transform(
+        numericValue,
+        'BRL',
+        'symbol',
+        '1.2-2',
+        'pt'
+      ) || '';
     } else {
       this.debtForm.get('valor_total')?.setValue(0, { emitEvent: false });
       inputElement.value = '';
@@ -205,9 +218,9 @@ export class DividaFormComponent implements OnInit {
    * @param value String formatada como moeda (ex: "R$ 1.234,56").
    * @returns Número (ex: 1234.56).
    */
-  parseCurrency(value: string): number {
+  parseCurrency(value: string | number): number {
+    if (typeof value === 'number') return value;
     if (!value) return 0;
-    // Remove "R$", pontos de milhar e substitui vírgula por ponto
     return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
   }
 
