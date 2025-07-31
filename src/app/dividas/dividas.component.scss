@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$erp-primary: #3FAAAA; // Verde Água/Ciano
+$erp-dark-background: #052D2D; // Verde Escuro/Ciano Escuro
+$erp-light-background: #F9F6F6; // Cinza Claro
+$erp-white: #FFFFFF;
+$erp-light-gray: #e0e0e0; // Para botões e bordas
+
+.dividas-container {
+  font-family: 'Inter', sans-serif;
+  padding: 1.5rem;
+  background-color: $erp-light-background;
+  min-height: calc(100vh - 4rem - 2.5rem - 3rem); // Altura da tela - header - footer - padding
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; // Espaçamento entre os blocos
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .title {
+    font-size: 2rem; // Tamanho do título "Dívidas"
+    font-weight: 600;
+    color: $erp-dark-background;
+    margin: 0;
+  }
+
+  .add-button {
+    background-color: $erp-primary;
+    color: $erp-white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      background-color: darken($erp-primary, 10%);
+    }
+  }
+}
+
+.filters-panel {
+  background-color: $erp-white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-wrap: wrap; // Permite que os campos quebrem linha em telas menores
+  gap: 1rem; // Espaçamento entre os campos de filtro
+
+  .filter-field {
+    flex: 1; // Permite que os campos se expandam
+    min-width: 180px; // Largura mínima para cada campo
+    max-width: 250px; // Largura máxima para cada campo
+  }
+
+  .search-button {
+    background-color: $erp-dark-background;
+    color: $erp-white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      background-color: lighten($erp-dark-background, 10%);
+    }
+  }
+
+  .clear-button {
+    background-color: $erp-light-gray; // Cor cinza clara
+    color: #333;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      background-color: darken($erp-light-gray, 10%);
+    }
+  }
+}
+
+.table-container {
+  background-color: $erp-white;
+  border-radius: 0.5rem;
+  overflow: hidden; // Garante que a sombra e bordas arredondadas funcionem com a tabela
+  flex: 1; // Ocupa o espaço restante
+  display: flex;
+  flex-direction: column;
+
+  .mat-progress-bar {
+    height: 4px; // Altura da barra de progresso
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+
+  .mat-table {
+    width: 100%;
+    border-collapse: collapse; // Remove espaçamento entre células
+  }
+
+  .mat-header-cell {
+    background-color: $erp-dark-background;
+    color: $erp-white;
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: none; // Remove borda inferior do cabeçalho
+  }
+
+  .mat-cell {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e0e0e0; // Borda inferior para as linhas
+    color: #333; // Cor do texto da célula
+  }
+
+  .mat-row:last-child .mat-cell {
+    border-bottom: none; // Remove a borda da última linha
+  }
+
+  .mat-icon-button {
+    color: $erp-primary; // Cor padrão para botões de ação
+  }
+
+  .mat-icon-button[color="warn"] {
+    color: #F44336; // Cor de aviso para o botão de deletar
+  }
+
+  .mat-paginator {
+    background-color: $erp-white;
+    border-top: 1px solid #e0e0e0;
+    padding: 0.5rem 1rem;
+    color: #333;
+  }
+
+  .mat-no-data-row {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  color: #090808;
+  max-width: 400px;
+  font-family: 'Inter', sans-serif;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #052D2D;
+}
+
+p {
+  font-size: 16px;
+  margin-bottom: 2rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+button {
+  padding: 0.5rem 1.2rem;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button.cancel {
+  background-color: transparent;
+  color: #090808;
+  border: 1px solid #ccc;
+}
+
+button.confirm {
+  background-color: #3FAAAA;
+  color: white;
+}
+
+button.confirm:hover {
+  background-color: #329d9d;
+}
+
+button.cancel:hover {
+  background-color: #f0f0f0;
+}

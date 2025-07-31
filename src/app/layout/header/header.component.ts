@@ -10,7 +10,7 @@ import { AuthService } from '../../auth/services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
