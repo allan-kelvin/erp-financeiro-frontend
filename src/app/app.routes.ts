@@ -20,9 +20,6 @@ export const routes: Routes = [
       { path: 'dividas', component: DividasComponent, data: { title: 'Dívidas' } },
       { path: 'dividas/nova', component: DividaFormComponent, data: { title: 'Nova Dívida' } }, // Rota para cadastro
       { path: 'dividas/editar/:id', component: DividaFormComponent, data: { title: 'Editar Dívida' } }, // Rota para edição
-      // Futuras rotas para Contas a Pagar, Relatórios
-      // { path: 'contas-a-pagar', component: ContasAPagarComponent, data: { title: 'Contas a Pagar' } },
-      // { path: 'relatorios', component: RelatoriosComponent, data: { title: 'Relatórios' } },
     ]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
