@@ -1,7 +1,7 @@
-<div class="dividas-container">
+<div class="despesas-container">
   <div class="header">
-    <h1 class="title">Dívidas</h1>
-    <button mat-raised-button color="primary" class="add-button" (click)="addDivida()">
+    <h1 class="title">Despesas</h1>
+    <button mat-raised-button color="primary" class="add-button" (click)="addDespesa()">
       <mat-icon>add</mat-icon> Adicionar
     </button>
   </div>
@@ -18,10 +18,10 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="filter-field">
-      <mat-label>Tipo Dívida</mat-label>
-      <mat-select formControlName="tipoDivida">
+      <mat-label>Tipo Despesa</mat-label>
+      <mat-select formControlName="tipoDespesa">
         <mat-option value="">Todos</mat-option>
-        <mat-option *ngFor="let type of tipoDividas" [value]="type">{{ type }}</mat-option>
+        <mat-option *ngFor="let type of tipoDespesas" [value]="type">{{ type }}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -60,16 +60,16 @@
         <td mat-cell *matCellDef="let element"> {{element.id}} </td>
       </ng-container>
 
-      <!-- Descrição Dívida Column -->
+      <!-- Descrição Despesa Column -->
       <ng-container matColumnDef="descricao">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Descrição </th>
         <td mat-cell *matCellDef="let element"> {{element.descricao}} </td>
       </ng-container>
 
-      <!-- Tipo Dívida Column -->
-      <ng-container matColumnDef="tipo_divida">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Dívida </th>
-        <td mat-cell *matCellDef="let element"> {{element.tipo_divida}} </td>
+      <!-- Tipo Despesa Column -->
+      <ng-container matColumnDef="tipo_despesa">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Despesa </th>
+        <td mat-cell *matCellDef="let element"> {{element.tipo_despesa} </td>
       </ng-container>
 
       <!-- Cartão Column -->
@@ -100,10 +100,10 @@
       <ng-container matColumnDef="acoes">
         <th mat-header-cell *matHeaderCellDef> Ações </th>
         <td mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" (click)="editDivida(element.id)">
+          <button mat-icon-button color="primary" (click)="editDespesa(element.id)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteDivida(element.id)">
+          <button mat-icon-button color="warn" (click)="deleteDespesa(element.id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
@@ -114,7 +114,7 @@
 
       <!-- Row shown when there is no matching data. -->
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="8">Nenhuma dívida encontrada correspondente à sua busca.</td>
+        <td class="mat-cell" colspan="8">Nenhuma despesa encontrada correspondente à sua busca.</td>
       </tr>
     </table>
 

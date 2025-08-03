@@ -15,12 +15,12 @@ import { finalize, Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { Cartao } from '../../cartoes/models/cartao.model';
 import { CartoesService } from '../../cartoes/services/cartoes.service';
-import { TipoDividaEnum } from '../enums/TipoDividaEnum';
-import { Divida } from '../models/divida.model';
-import { DividasService } from '../services/dividas.service';
+import { TipoDespesaEnum } from '../enums/TipoDespesaEnum';
+import { Despesa } from '../models/despesa.model';
+import { DespesaService } from '../services/despesa.service';
 
 @Component({
-  selector: 'app-divida-form',
+  selector: 'app-despesas-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -38,17 +38,17 @@ import { DividasService } from '../services/dividas.service';
     FormsModule,
     ReactiveFormsModule
   ],
-  templateUrl: './divida-form.component.html',
-  styleUrl: './divida-form.component.scss'
+  templateUrl: './despesas-form.component.html',
+  styleUrl: './despesas-form.component.scss'
 })
-export class DividaFormComponent implements OnInit {
+export class DespesasFormComponent implements OnInit {
 
   debtForm!: FormGroup;
   isEditMode: boolean = false;
-  dividaId: number | null = null;
+  despesaId: number | null = null;
   isLoading: boolean = false;
 
-  debtTypes = Object.values(TipoDividaEnum);
+  debtTypes = Object.values(TipoDespesaEnum);
   availableCards: Cartao[] = [];
   installmentOptions: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 95, 100, 120, 180, 360];
 
@@ -73,7 +73,7 @@ export class DividaFormComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private dividasService: DividasService,
+    private despesasService: DespesaService,
     private cartoesService: CartoesService,
     private snackBar: MatSnackBar,
     private authService: AuthService,
@@ -83,7 +83,7 @@ export class DividaFormComponent implements OnInit {
   ngOnInit(): void {
     this.debtForm = this.fb.group({
       descricao: ['', Validators.required],
-      tipo_divida: ['', Validators.required],
+      tipo_despesa: ['', Validators.required],
       cartaoId: [{ value: '', disabled: true }],
       data_lancamento: ['', Validators.required],
       valor_total: [0, [Validators.required, Validators.min(0.01)]],
@@ -103,8 +103,8 @@ export class DividaFormComponent implements OnInit {
       const id = params.get('id');
       if (id) {
         this.isEditMode = true;
-        this.dividaId = +id;
-        this.loadDividaData(this.dividaId);
+        this.despesaId = +id;
+        this.loadDespesaData(this.despesaId);
       }
     });
   }
@@ -151,8 +151,8 @@ export class DividaFormComponent implements OnInit {
    * Configura a lógica para habilitar/desabilitar campos condicionalmente.
    */
   setupConditionalFields(): void {
-    this.debtForm.get('tipo_divida')?.valueChanges.subscribe(value => {
-      if (value === TipoDividaEnum.CARTAO) {
+    this.debtForm.get('tipo_despesa')?.valueChanges.subscribe(value => {
+      if (value === TipoDespesaEnum.CARTAO) {
         this.debtForm.get('cartaoId')?.enable();
         this.debtForm.get('cartaoId')?.setValidators(Validators.required);
         this.isCardFieldEnabled = true; // Mantenha se for usado para *ngIf
@@ -239,34 +239,34 @@ export class DividaFormComponent implements OnInit {
   }
 
   /**
-   * Carrega os dados da dívida para edição do backend.
-   * @param id ID da dívida a ser carregada.
+   * Carrega os dados da despesas para edição do backend.
+   * @param id ID da despesas a ser carregada.
    */
-  loadDividaData(id: number): void {
+  loadDespesaData(id: number): void {
     this.isLoading = true;
-    this.dividasService.getDividaById(id).pipe(
+    this.despesasService.getDespesaById(id).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
-      next: (divida: Divida) => {
+      next: (despesa: Despesa) => {
         this.debtForm.patchValue({
-          descricao: divida.descricao,
-          tipo_divida: divida.tipo_divida,
-          cartaoId: divida.cartaoId,
-          data_lancamento: divida.data_lancamento ? new Date(divida.data_lancamento) : null,
-          valor_total: divida.valor_total,
-          parcelado: divida.parcelado,
-          qtd_parcelas: divida.qtd_parcelas,
-          valor_parcela: divida.valor_parcela,
-          juros_aplicado: divida.juros_aplicado,
-          data_fim_parcela: divida.data_fim_parcela ? new Date(divida.data_fim_parcela) : null,
+          descricao: despesa.descricao,
+          tipo_despesa: despesa.tipo_despesa,
+          cartaoId: despesa.cartaoId,
+          data_lancamento: despesa.data_lancamento ? new Date(despesa.data_lancamento) : null,
+          valor_total: despesa.valor_total,
+          parcelado: despesa.parcelado,
+          qtd_parcelas: despesa.qtd_parcelas,
+          valor_parcela: despesa.valor_parcela,
+          juros_aplicado: despesa.juros_aplicado,
+          data_fim_parcela: despesa.data_fim_parcela ? new Date(despesa.data_fim_parcela) : null,
         });
 
-        if (divida.tipo_divida === TipoDividaEnum.CARTAO) {
+        if (despesa.tipo_despesa === TipoDespesaEnum.CARTAO) {
           this.debtForm.get('cartaoId')?.enable({ emitEvent: false }); // Desabilita o evento para evitar loop
         } else {
           this.debtForm.get('cartaoId')?.disable({ emitEvent: false });
         }
-        if (divida.parcelado) {
+        if (despesa.parcelado) {
           this.debtForm.get('qtd_parcelas')?.enable({ emitEvent: false });
         } else {
           this.debtForm.get('qtd_parcelas')?.disable({ emitEvent: false });
@@ -282,9 +282,9 @@ export class DividaFormComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Erro ao carregar dados da dívida:', error);
-        this.snackBar.open('Erro ao carregar dívida. Tente novamente.', 'Fechar', { duration: 3000 });
-        this.router.navigate(['/dashboard/dividas']);
+        console.error('Erro ao carregar dados da despesas:', error);
+        this.snackBar.open('Erro ao carregar despesas. Tente novamente.', 'Fechar', { duration: 3000 });
+        this.router.navigate(['/dashboard/despesas']);
       }
     });
   }
@@ -324,18 +324,18 @@ export class DividaFormComponent implements OnInit {
     delete formData.qant_parcelas_restantes;
     delete formData.data_fim_parcela;
 
-    let request$: Observable<Divida>;
+    let request$: Observable<Despesa>;
     let successMessage: string;
     let errorMessage: string;
 
-    if (this.isEditMode && this.dividaId) {
-      request$ = this.dividasService.updateDivida(this.dividaId, formData);
-      successMessage = 'Dívida atualizada com sucesso!';
-      errorMessage = 'Erro ao atualizar dívida. Tente novamente.';
+    if (this.isEditMode && this.despesaId) {
+      request$ = this.despesasService.updateDespesa(this.despesaId, formData);
+      successMessage = 'despesas atualizada com sucesso!';
+      errorMessage = 'Erro ao atualizar despesas. Tente novamente.';
     } else {
-      request$ = this.dividasService.createDivida(formData);
-      successMessage = 'Dívida cadastrada com sucesso!';
-      errorMessage = 'Erro ao cadastrar dívida. Tente novamente.';
+      request$ = this.despesasService.createDespesa(formData);
+      successMessage = 'despesas cadastrada com sucesso!';
+      errorMessage = 'Erro ao cadastrar despesas. Tente novamente.';
     }
 
     request$.pipe(
@@ -343,10 +343,10 @@ export class DividaFormComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         this.snackBar.open(successMessage, 'Fechar', { duration: 3000 });
-        this.router.navigate(['/dashboard/dividas']);
+        this.router.navigate(['/dashboard/despesas']);
       },
       error: (error) => {
-        console.error('Erro na operação da dívida:', error);
+        console.error('Erro na operação da despesas:', error);
         const backendError = error.error?.message || errorMessage;
         this.snackBar.open(backendError, 'Fechar', { duration: 5000 });
       }
@@ -354,17 +354,17 @@ export class DividaFormComponent implements OnInit {
   }
 
   /**
-   * Volta para a tela de listagem de dívidas.
+   * Volta para a tela de listagem de despesass.
    */
   goBack(): void {
-    this.router.navigate(['/dashboard/dividas']);
+    this.router.navigate(['/dashboard/despesas']);
   }
 
   /**
-   * Cancela a operação e volta para a tela de listagem de dívidas.
+   * Cancela a operação e volta para a tela de listagem de despesass.
    */
   cancel(): void {
-    this.router.navigate(['/dashboard/dividas']);
+    this.router.navigate(['/dashboard/despesas']);
   }
 
 }

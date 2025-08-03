@@ -37,25 +37,6 @@
       </div>
     </div>
 
-    <!-- Menu Financeiro com Submenu -->
-    <div class="menu-with-submenu">
-      <div class="nav-link menu-toggle" (click)="toggleSubMenu('financeiro')">
-        <mat-icon class="nav-icon">account_balance_wallet</mat-icon>
-        Financeiro
-        <mat-icon class="expand-icon" [ngClass]="{'rotated': isFinanceiroExpanded}">expand_more</mat-icon>
-      </div>
-      <div class="submenu" [@slideDownUp]="isFinanceiroExpanded ? 'open' : 'closed'">
-        <a routerLink="/dashboard/contas-a-pagar" routerLinkActive="active" class="sub-link">
-          <mat-icon class="sub-icon">payments</mat-icon>
-          Contas a Pagar
-        </a>
-        <a routerLink="/dashboard/contas-a-receber" routerLinkActive="active" class="sub-link">
-          <mat-icon class="sub-icon">request_quote</mat-icon>
-          Contas a Receber
-        </a>
-      </div>
-    </div>
-
     <!-- Menu Lançamentos com Submenu -->
     <div class="menu-with-submenu">
       <div class="nav-link menu-toggle" (click)="toggleSubMenu('lancamentos')">
@@ -71,6 +52,25 @@
         <a routerLink="/dashboard/receitas" routerLinkActive="active" class="sub-link">
           <mat-icon class="sub-icon">attach_money</mat-icon>
           Receitas
+        </a>
+      </div>
+    </div>
+
+    <!-- Menu Financeiro com Submenu -->
+    <div class="menu-with-submenu">
+      <div class="nav-link menu-toggle" (click)="toggleSubMenu('financeiro')">
+        <mat-icon class="nav-icon">attach_money</mat-icon>
+        Financeiro
+        <mat-icon class="expand-icon" [ngClass]="{'rotated': isFinanceiroExpanded}">expand_more</mat-icon>
+      </div>
+      <div class="submenu" [@slideDownUp]="isFinanceiroExpanded ? 'open' : 'closed'">
+        <a routerLink="/dashboard/contas-a-pagar" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">payments</mat-icon>
+          Contas a Pagar
+        </a>
+        <a routerLink="/dashboard/contas-a-receber" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">request_quote</mat-icon>
+          Contas a Receber
         </a>
       </div>
     </div>

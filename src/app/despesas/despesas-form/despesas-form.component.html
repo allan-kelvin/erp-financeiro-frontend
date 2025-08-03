@@ -1,6 +1,6 @@
 <div class="debt-form-container">
   <div class="header">
-    <h1 class="title">{{ isEditMode ? 'Editar Dívida' : 'Nova Dívida' }}</h1>
+    <h1 class="title">{{ isEditMode ? 'Editar Despesa' : 'Nova Despesa' }}</h1>
   </div>
 
   <div class="form-panel mat-elevation-z2">
@@ -16,14 +16,14 @@
         </mat-form-field>
 
         <div class="form-row">
-          <!-- Campo Tipo Dívida -->
+          <!-- Campo Tipo despesa -->
           <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Tipo Dívida</mat-label>
-            <mat-select formControlName="tipo_divida">
+            <mat-label>Tipo Despesa</mat-label>
+            <mat-select formControlName="tipo_despesas">
               <mat-option *ngFor="let type of debtTypes" [value]="type">{{ type }}</mat-option>
             </mat-select>
-            <mat-error *ngIf="debtForm.get('tipo_divida')?.invalid && debtForm.get('tipo_divida')?.touched">
-              Tipo de Dívida é obrigatório.
+            <mat-error *ngIf="debtForm.get('despesas')?.invalid && debtForm.get('despesas')?.touched">
+              Tipo de Despesa é obrigatório.
             </mat-error>
           </mat-form-field>
 
@@ -35,7 +35,7 @@
               <mat-option *ngFor="let card of availableCards" [value]="card.id">{{ card.descricao }}</mat-option>
             </mat-select>
             <mat-error *ngIf="debtForm.get('cartaoId')?.invalid && debtForm.get('cartaoId')?.touched">
-              Cartão é obrigatório para dívidas de 'Cartão'.
+              Cartão é obrigatório para despesas de 'Cartão'.
             </mat-error>
           </mat-form-field>
 
@@ -87,7 +87,7 @@
               <mat-option *ngFor="let num of installmentOptions" [value]="num">{{ num }}</mat-option>
             </mat-select>
             <mat-error *ngIf="debtForm.get('qtd_parcelas')?.invalid && debtForm.get('qtd_parcelas')?.touched">
-              Quantidade de Parcelas é obrigatória para dívidas parceladas.
+              Quantidade de Parcelas é obrigatória para despesas parceladas.
             </mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline" class="form-field-quarter">

@@ -1,4 +1,4 @@
-export enum TipoDividaEnum {
+export enum TipoDespesaEnum {
   CARTAO = 'Cartão',
   FINANCIAMENTO = 'Financiamento',
   CONTA_FIXA = 'Conta fixa',
