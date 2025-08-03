@@ -4,22 +4,78 @@
   </div>
 
   <nav class="sidebar-nav">
+    <!-- Link para Dashboard -->
     <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
       <mat-icon class="nav-icon">dashboard</mat-icon>
       Dashboard
     </a>
-    <a routerLink="/dashboard/cartoes" routerLinkActive="active" class="nav-link">
-      <mat-icon class="nav-icon">credit_card</mat-icon>
-      Cartões
-    </a>
-    <a routerLink="/dashboard/dividas" routerLinkActive="active" class="nav-link">
-      <mat-icon class="nav-icon">money_off</mat-icon>
-      Dívidas
-    </a>
-    <a routerLink="/dashboard/contas-a-pagar" routerLinkActive="active" class="nav-link">
-      <mat-icon class="nav-icon">receipt_long</mat-icon>
-      Contas a Pagar
-    </a>
+
+    <!-- Menu Cadastros com Submenu -->
+    <div class="menu-with-submenu">
+      <div class="nav-link menu-toggle" (click)="toggleSubMenu('cadastros')">
+        <mat-icon class="nav-icon">folder</mat-icon>
+        Cadastros
+        <mat-icon class="expand-icon" [ngClass]="{'rotated': isCadastrosExpanded}">expand_more</mat-icon>
+      </div>
+      <div class="submenu" [@slideDownUp]="isCadastrosExpanded ? 'open' : 'closed'">
+        <a routerLink="/dashboard/cartoes" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">credit_card</mat-icon>
+          Cartões
+        </a>
+        <a routerLink="/dashboard/sub-categorias" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">category</mat-icon>
+          Sub-Categorias
+        </a>
+        <a routerLink="/dashboard/banco" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">account_balance</mat-icon>
+          Banco
+        </a>
+        <a routerLink="/dashboard/fornecedor" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">local_shipping</mat-icon>
+          Fornecedor
+        </a>
+      </div>
+    </div>
+
+    <!-- Menu Lançamentos com Submenu -->
+    <div class="menu-with-submenu">
+      <div class="nav-link menu-toggle" (click)="toggleSubMenu('lancamentos')">
+        <mat-icon class="nav-icon">edit_note</mat-icon>
+        Lançamentos
+        <mat-icon class="expand-icon" [ngClass]="{'rotated': isLancamentosExpanded}">expand_more</mat-icon>
+      </div>
+      <div class="submenu" [@slideDownUp]="isLancamentosExpanded ? 'open' : 'closed'">
+        <a routerLink="/dashboard/despesas" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">receipt_long</mat-icon>
+          Despesas
+        </a>
+        <a routerLink="/dashboard/receitas" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">attach_money</mat-icon>
+          Receitas
+        </a>
+      </div>
+    </div>
+
+    <!-- Menu Financeiro com Submenu -->
+    <div class="menu-with-submenu">
+      <div class="nav-link menu-toggle" (click)="toggleSubMenu('financeiro')">
+        <mat-icon class="nav-icon">attach_money</mat-icon>
+        Financeiro
+        <mat-icon class="expand-icon" [ngClass]="{'rotated': isFinanceiroExpanded}">expand_more</mat-icon>
+      </div>
+      <div class="submenu" [@slideDownUp]="isFinanceiroExpanded ? 'open' : 'closed'">
+        <a routerLink="/dashboard/contas-a-pagar" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">payments</mat-icon>
+          Contas a Pagar
+        </a>
+        <a routerLink="/dashboard/contas-a-receber" routerLinkActive="active" class="sub-link">
+          <mat-icon class="sub-icon">request_quote</mat-icon>
+          Contas a Receber
+        </a>
+      </div>
+    </div>
+
+    <!-- Link para Relatórios -->
     <a routerLink="/dashboard/relatorios" routerLinkActive="active" class="nav-link">
       <mat-icon class="nav-icon">bar_chart</mat-icon>
       Relatórios

@@ -6,7 +6,7 @@ $erp-light-background: #F9F6F6; // Cinza Claro
 $erp-white: #FFFFFF;
 $erp-light-gray: #e0e0e0; // Para botões e bordas
 
-.dividas-container {
+.despesas-container {
   font-family: 'Inter', sans-serif;
   padding: 1.5rem;
   background-color: $erp-light-background;
@@ -23,7 +23,7 @@ $erp-light-gray: #e0e0e0; // Para botões e bordas
   margin-bottom: 1rem;
 
   .title {
-    font-size: 2rem; // Tamanho do título "Dívidas"
+    font-size: 2rem; // Tamanho do título "despesa"
     font-weight: 600;
     color: $erp-dark-background;
     margin: 0;

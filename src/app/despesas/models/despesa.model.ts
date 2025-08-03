@@ -1,8 +1,8 @@
 import { BandeiraEnum } from "../../cartoes/enums/cartaoEnum.enum";
-import { TipoDividaEnum } from "../enums/TipoDividaEnum";
+import { TipoDespesaEnum } from "../enums/TipoDespesaEnum";
 
 
-export interface Divida {
+export interface Despesa {
   id: number;
   descricao: string;
   valor_total: number;
@@ -12,7 +12,7 @@ export interface Divida {
   total_com_juros?: number | null;
   data_lancamento: string;
   data_fim_parcela?: string | null;
-  tipo_divida: TipoDividaEnum;
+  tipo_despesa: TipoDespesaEnum;
   cartaoId: number;
   usuarioId: number;
   juros_aplicado?: number | null;

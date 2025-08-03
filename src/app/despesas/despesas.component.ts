@@ -18,11 +18,12 @@ import { TipoCartaoEnum } from '../cartoes/enums/cartaoEnum.enum';
 import { Cartao } from '../cartoes/models/cartao.model';
 import { CartoesService } from '../cartoes/services/cartoes.service';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
-import { Divida } from './models/divida.model';
-import { DividasService } from './services/dividas.service';
+import { Despesa } from './models/despesa.model';
+import { DespesaService } from './services/despesa.service';
+
 
 @Component({
-  selector: 'app-dividas',
+  selector: 'app-despesas',
   standalone: true,
   imports: [
     CommonModule,
@@ -37,20 +38,20 @@ import { DividasService } from './services/dividas.service';
     MatSortModule,
     MatSnackBarModule,
     MatDialogModule,
-    MatProgressBarModule, // Adicionar MatProgressBarModule
+    MatProgressBarModule,
     CurrencyPipe
   ],
-  templateUrl: './dividas.component.html',
-  styleUrl: './dividas.component.scss'
+  templateUrl: './despesas.component.html',
+  styleUrl: './despesas.component.scss'
 })
-export class DividasComponent implements OnInit, AfterViewInit {
+export class DespesasComponent implements OnInit, AfterViewInit {
 
   filterForm!: FormGroup;
-  dataSource = new MatTableDataSource<Divida>();
-  displayedColumns: string[] = ['id', 'descricao', 'tipo_divida', 'cartao', 'valor_total', 'parcelado', 'qtd_parcelas', 'acoes'];
+  dataSource = new MatTableDataSource<Despesa>();
+  displayedColumns: string[] = ['id', 'descricao', 'tipo_despesa', 'cartao', 'valor_total', 'parcelado', 'qtd_parcelas', 'acoes'];
   isLoading: boolean = false;
 
-  tipoDividas = Object.values(TipoCartaoEnum);
+  tipoDespesas = Object.values(TipoCartaoEnum);
   availableCards: Cartao[] = []; // Lista de cartões para o select de filtro 'Cartão'
   parceladoOptions = [
     { value: true, viewValue: 'Sim' },
@@ -63,8 +64,8 @@ export class DividasComponent implements OnInit, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private dividasService: DividasService, // Injete o serviço de dívidas
-    private cartoesService: CartoesService, // Injete o serviço de cartões
+    private despesaService: DespesaService,
+    private cartoesService: CartoesService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) { }
@@ -73,13 +74,13 @@ export class DividasComponent implements OnInit, AfterViewInit {
     this.filterForm = this.fb.group({
       id: [''],
       descricao: [''],
-      tipoDivida: [''],
+      tipoDespesa: [''],
       cartaoId: [''], // ID do cartão para filtro
       parcelado: [''] // true, false ou '' para todos
     });
 
     this.loadAvailableCards(); // Carrega os cartões disponíveis para o filtro
-    this.loadDividas(); // Carrega as dívidas ao inicializar o componente
+    this.loadDespesas(); // Carrega as despesas ao inicializar o componente
   }
 
   ngAfterViewInit(): void {
@@ -103,27 +104,27 @@ export class DividasComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Carrega as dívidas do backend, aplicando filtros se houver.
+   * Carrega as despesas do backend, aplicando filtros se houver.
    */
-  loadDividas(): void {
+  loadDespesas(): void {
     this.isLoading = true;
     const filters = this.filterForm.value;
-    console.log('Aplicando filtros de dívidas:', filters);
+    console.log('Aplicando filtros de despesas:', filters);
 
-    this.dividasService.getDividas(filters).pipe(
+    this.despesaService.getDespesas(filters).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
-      next: (data: Divida[]) => {
+      next: (data: Despesa[]) => {
         this.dataSource.data = data;
-        if (data.length === 0 && (filters.id || filters.descricao || filters.tipoDivida || filters.cartaoId || filters.parcelado !== '')) {
-          this.snackBar.open('Nenhuma dívida encontrada com os filtros aplicados.', 'Fechar', { duration: 2000 });
+        if (data.length === 0 && (filters.id || filters.descricao || filters.tipoDespesa || filters.cartaoId || filters.parcelado !== '')) {
+          this.snackBar.open('Nenhuma despesas encontrada com os filtros aplicados.', 'Fechar', { duration: 2000 });
         } else if (data.length === 0) {
-          this.snackBar.open('Nenhuma dívida cadastrada.', 'Fechar', { duration: 2000 });
+          this.snackBar.open('Nenhuma despesas cadastrada.', 'Fechar', { duration: 2000 });
         }
       },
       error: (error) => {
-        console.error('Erro ao carregar dívidas:', error);
-        this.snackBar.open('Erro ao carregar dívidas. Verifique sua conexão ou tente novamente.', 'Fechar', { duration: 5000 });
+        console.error('Erro ao carregar despesas:', error);
+        this.snackBar.open('Erro ao carregar despesas. Verifique sua conexão ou tente novamente.', 'Fechar', { duration: 5000 });
       }
     });
   }
@@ -132,63 +133,63 @@ export class DividasComponent implements OnInit, AfterViewInit {
    * Aplica os filtros definidos no formulário.
    */
   applyFilters(): void {
-    this.loadDividas();
+    this.loadDespesas();
   }
 
   /**
-   * Limpa os filtros do formulário e recarrega as dívidas.
+   * Limpa os filtros do formulário e recarrega as despesas.
    */
   clearFilters(): void {
     this.filterForm.reset({
       id: '',
       descricao: '',
-      tipoDivida: '',
+      tipoDespesa: '',
       cartaoId: '',
       parcelado: ''
     });
-    this.loadDividas();
+    this.loadDespesas();
   }
 
   /**
-   * Navega para a tela de adição de dívida.
+   * Navega para a tela de adição de despesas.
    */
-  addDivida(): void {
-    console.log('Navegar para tela de adicionar dívida');
-    this.router.navigate(['/dashboard/dividas/nova']); // Exemplo de rota
+  addDespesa(): void {
+    console.log('Navegar para tela de adicionar despesas');
+    this.router.navigate(['/dashboard/despesas/nova']); // Exemplo de rota
   }
 
   /**
-   * Navega para a tela de edição de dívida.
-   * @param id ID da dívida a ser editada.
+   * Navega para a tela de edição de despesas.
+   * @param id ID da despesas a ser editada.
    */
-  editDivida(id: number): void {
-    console.log('Editar dívida com ID:', id);
-    this.router.navigate(['/dashboard/dividas/editar', id]); // Exemplo de rota
+  editDespesa(id: number): void {
+    console.log('Editar despesas com ID:', id);
+    this.router.navigate(['/dashboard/despesas/editar', id]); // Exemplo de rota
   }
 
   /**
-   * Exclui uma dívida após confirmação.
-   * @param id ID da dívida a ser excluída.
+   * Exclui uma despesas após confirmação.
+   * @param id ID da despesas a ser excluída.
    */
-  deleteDivida(id: number): void {
+  deleteDespesa(id: number): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
-      data: { message: 'Tem certeza que deseja excluir esta dívida?' }
+      data: { message: 'Tem certeza que deseja excluir esta despesas?' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.isLoading = true;
-        this.dividasService.deleteDivida(id).pipe(
+        this.despesaService.deleteDespesa(id).pipe(
           finalize(() => this.isLoading = false)
         ).subscribe({
           next: () => {
-            this.snackBar.open('Dívida excluída com sucesso!', 'Fechar', { duration: 3000 });
-            this.loadDividas();
+            this.snackBar.open('despesas excluída com sucesso!', 'Fechar', { duration: 3000 });
+            this.loadDespesas();
           },
           error: (error) => {
-            console.error('Erro ao excluir dívida:', error);
-            const backendError = error.error?.message || 'Erro ao excluir dívida. Tente novamente.';
+            console.error('Erro ao excluir despesas:', error);
+            const backendError = error.error?.message || 'Erro ao excluir despesas. Tente novamente.';
             this.snackBar.open(backendError, 'Fechar', { duration: 5000 });
           }
         });

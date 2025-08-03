@@ -17,13 +17,9 @@ $erp-light-background: #F9F5F5; // Fundo da página
   min-height: calc(100vh - 4rem - 2.5rem - 3rem);
 }
 
-#descricao{
-    margin: 0px 500px;
-}
-
-
 .debt-form-container {
-  max-width: 900px;
+  width: 100%;
+  max-width: 1800px;
   margin: 0 auto;
 }
 
@@ -72,55 +68,28 @@ $erp-light-background: #F9F5F5; // Fundo da página
 .form-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem; // Espaçamento entre os campos na linha
-  margin-bottom: 1rem; // Espaçamento entre as linhas de campos
+  gap: 1rem; // espaçamento entre os campos
+  margin-bottom: 1rem;
+}
 
-  .full-width-field {
-    width: 100%;
-  }
+.form-field-half {
+  flex: 1 1 calc(50% - 1rem);
+}
 
-  .form-field-third {
-    flex: 1 1 calc(33.333% - 1rem); // 3 campos por linha
-    min-width: 180px;
-  }
+.form-field-third {
+  flex: 1 1 calc(33.33% - 1rem);
+}
 
-  .form-field-quarter {
-    flex: 1 1 calc(25% - 1.125rem); // 4 campos por linha
-    min-width: 150px;
-  }
+.form-field-quarter {
+  flex: 1 1 calc(25% - 1rem);
+}
 
-  // Estilos para os campos do Angular Material
-  .mat-mdc-form-field-flex {
-    border-radius: 0.25rem;
-    background-color: $erp-light-background;
-  }
+.full-width-field {
+  width: 100%;
+}
 
-  .mat-mdc-form-field-input-control {
-    color: $erp-dark-gray;
-  }
-
-  .mat-mdc-form-field-label {
-    color: #777;
-  }
-
-  .mat-mdc-form-field-outline-thick {
-    color: $erp-primary !important;
-  }
-
-  &.mat-focused {
-    .mat-mdc-form-field-outline-thick {
-      color: $erp-primary !important;
-    }
-  }
-
-  &.mat-form-field-invalid {
-    .mat-mdc-form-field-outline-thick {
-      color: #F44336 !important;
-    }
-    .mat-mdc-form-field-label {
-      color: #F44336 !important;
-    }
-  }
+mat-form-field {
+  width: 100%;
 }
 
 .form-actions {
@@ -144,6 +113,7 @@ $erp-light-background: #F9F5F5; // Fundo da página
   .mat-raised-button[color="primary"] {
     background-color: $erp-primary;
     color: $erp-white;
+
     &:hover {
       background-color: darken($erp-primary, 10%);
     }
@@ -152,6 +122,7 @@ $erp-light-background: #F9F5F5; // Fundo da página
   .mat-stroked-button[color="basic"] {
     border-color: $erp-light-teal;
     color: $erp-dark-gray;
+
     &:hover {
       background-color: #f0f0f0;
     }
@@ -160,6 +131,7 @@ $erp-light-background: #F9F5F5; // Fundo da página
   .mat-stroked-button[color="warn"] {
     border-color: #F44336;
     color: #F44336;
+
     &:hover {
       background-color: #ffebee;
     }
