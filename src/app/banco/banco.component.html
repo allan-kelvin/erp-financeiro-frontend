@@ -1,0 +1,71 @@
+<div class="banco-container">
+
+  <!--Pesquisa-->
+  <form [formGroup]="filterForm" class="filters-panel mat-elevation-z2">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>ID</mat-label>
+      <input matInput formControlName="id" placeholder="Buscar por ID" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Descrição</mat-label>
+      <input matInput formControlName="descricao" placeholder="Buscar por Descrição" />
+    </mat-form-field>
+
+    <button mat-flat-button color="accent" class="search-button" (click)="applyFilters()">
+      <mat-icon>search</mat-icon> Buscar
+    </button>
+    <button mat-flat-button class="clear-button" (click)="clearFilters()">
+      <mat-icon>clear</mat-icon> Limpar
+    </button>
+
+    <button mat-raised-button color="primary" class="add-button" (click)="addBank()">
+      <mat-icon>add</mat-icon> Adicionar
+    </button>
+  </form>
+
+  <!-- Tabela de listagem de bancos -->
+  <mat-card>
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z2 table-full-width">
+
+      <!-- Coluna ID -->
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+      </ng-container>
+
+      <!-- Coluna NOME -->
+      <ng-container matColumnDef="nome">
+        <mat-header-cell *matHeaderCellDef> Nome </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.nome}} </mat-cell>
+      </ng-container>
+
+      <!-- Coluna ATIVO -->
+      <ng-container matColumnDef="ativo">
+        <mat-header-cell *matHeaderCellDef class="ativo-column"> Ativo </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="ativo-column">
+          <mat-icon *ngIf="element.ativo" class="active-icon">check_circle</mat-icon>
+          <mat-icon *ngIf="!element.ativo" class="inactive-icon">cancel</mat-icon>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Coluna AÇÕES -->
+      <ng-container matColumnDef="acoes">
+        <mat-header-cell *matHeaderCellDef class="acoes-column"> Ações </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="acoes-column">
+          <button mat-icon-button color="accent" (click)="onEdit(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="onDelete(element)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <!-- Paginação -->
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </mat-card>
+</div>

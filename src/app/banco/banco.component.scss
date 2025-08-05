@@ -1,0 +1,153 @@
+$erp-primary: #3FAAAA;
+$erp-dark-background: #052D2D;
+$erp-light-background: #F9F6F6;
+$erp-white: #FFFFFF;
+
+.banco-container {
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 64px);
+}
+
+.filters-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 24px;
+  align-items: baseline;
+  justify-content: space-between;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.filter-field {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+
+ .search-button {
+    background-color: $erp-dark-background;
+    color: $erp-white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      background-color: lighten($erp-dark-background, 10%);
+    }
+  }
+
+  .clear-button {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      background-color: darken(#e0e0e0, 10%);
+    }
+  }
+
+.add-button {
+    background-color: $erp-primary;
+    color: $erp-white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      background-color: darken($erp-primary, 10%);
+    }
+  }
+
+/* Estilos para o container da tabela */
+mat-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0; // Remove o padding padrão para que a tabela ocupe toda a área
+}
+
+.mat-table {
+  width: 100%;
+}
+
+/* Estilo para o cabeçalho da tabela */
+.mat-header-cell {
+  background-color: #e0e0e0; /* Fundo cinza um pouco mais escuro para o cabeçalho */
+  color: #333;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 16px;
+}
+
+/* Estilo para as células de dados da tabela */
+.mat-cell {
+  padding: 16px;
+  color: #555;
+  border-bottom-style: solid;
+  border-bottom-color: #e0e0e0;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: #f7f7f7; // Cor de fundo para linhas ímpares
+}
+
+.mat-row:hover {
+  background-color: #e0e0e0;
+}
+
+/* Estilos para as colunas de ações e status */
+.acoes-column {
+  text-align: right;
+  width: 120px;
+}
+
+.ativo-column {
+  text-align: center;
+  width: 80px;
+}
+
+.active-icon {
+  color: #4CAF50; /* Verde para 'ativo' */
+  font-size: 20px;
+}
+
+.inactive-icon {
+  color: #F44336; /* Vermelho para 'inativo' */
+  font-size: 20px;
+}
+
+/* Container para os botões de ação na célula da tabela */
+.acoes-column button {
+  margin-left: 8px;
+}
+
+/* Estilos para a paginação */
+.mat-paginator {
+  background-color: #fff;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 16px;
+}
+
+.mat-paginator-range-label {
+  color: #333;
+}
