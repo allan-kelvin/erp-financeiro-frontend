@@ -1,0 +1,202 @@
+// Paleta
+$page-bg: #fbf6f6;
+$card-bg: #fff;
+$card-border: rgba(0,0,0,0.06);
+$input-border: rgba(0,0,0,0.5);
+$input-height: 48px;
+$accent-blue: #3FAAAA;
+$muted: #8a8a8a;
+$shadow: 0 10px 20px rgba(18,38,63,0.05);
+
+// Container da página
+.cadastro-banco-container {
+  display: flex;
+  justify-content: center;
+  padding: 28px 20px;
+  background: $page-bg;
+  min-height: calc(100vh - 64px);
+}
+
+/* Card */
+.cadastro-banco-card {
+  width: 100%;
+  max-width: 1200px;
+  background: $card-bg;
+  border-radius: 8px;
+  border: 1px solid $card-border;
+  box-shadow: $shadow;
+  overflow: visible;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.card-title {
+  font-weight: 700;
+  font-size: 20px;
+  color: #0f2b2b;
+}
+.header-actions {
+  display:flex;
+  gap: 10px;
+}
+
+mat-card-content {
+  padding: 22px 24px;
+  display: flex;
+  gap: 28px;
+  align-items: flex-start; /* importante para imagem ficar no topo */
+  flex-wrap: wrap;
+}
+
+/* Colunas */
+.form-column {
+  flex: 1 1 700px; /* ocupa a maior parte */
+  min-width: 320px;
+}
+.image-column {
+  width: 240px;
+  display:flex;
+  flex-direction:column;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Form layout */
+.cadastro-banco-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Nome input grande */
+.mat-form-field {
+  width: 100%;
+}
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  border-radius: 6px;
+}
+.mat-form-field .mat-input-element {
+  height: $input-height;
+  line-height: $input-height;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid $input-border;
+  box-shadow: none;
+}
+
+/* Linha com select + toggle */
+.form-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+}
+.half-width {
+  flex: 1 1 calc(70%); /* select ocupa mais espaço */
+  min-width: 200px;
+}
+.toggle-wrapper {
+  flex: 0 0 56px; /* largura fixa para o toggle */
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+}
+
+/* Estilo pílula para o slide toggle (simulação visual) */
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: #3FAAAA; /* vermelho da pílula quando ligado */
+}
+.mat-slide-toggle .mat-slide-toggle-thumb {
+  border: 2px solid white;
+}
+
+/* Area da imagem: caixa tracejada igual ao mock */
+.image-box {
+  width: 180px;
+  height: 140px;
+  border-radius: 8px;
+  border: 1.5px dashed rgba(11,102,255,0.12);
+  background: #f3fbff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding: 10px;
+  color: $accent-blue;
+  box-shadow: 0 6px 12px rgba(11,102,255,0.03);
+}
+.image-box .camera-icon { font-size: 34px; margin-bottom:6px; }
+
+/* preview */
+.image-preview {
+  width: 180px;
+  height: 140px;
+  border-radius:8px;
+  overflow:hidden;
+  border: 1px solid rgba(0,0,0,0.04);
+  background:white;
+}
+.image-preview img { width:100%; height:100%; object-fit:cover; }
+
+/* botão selecionar imagem abaixo */
+.select-image-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border-radius:6px;
+  padding:8px 12px;
+  border:1px solid rgba(11,102,255,0.12);
+  background:white;
+  color:$accent-blue;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 2px 6px rgba(11,102,255,0.04);
+}
+
+/* input file escondido */
+.file-input { display:none; }
+
+/* Ações do card: botões no header já, mas se quiser manter aqui */
+.card-actions {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+/* Botões: estilos similares ao mock */
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+.btn-primary {
+  background: #3FAAAA;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+.btn-danger {
+  background: transparent;
+  color: #d32f2f;
+  border: 1px solid rgba(211,47,47,0.12);
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
+/* Responsivo: imagem abaixo do form em telas pequenas */
+@media (max-width: 900px) {
+  mat-card-content { flex-direction: column; }
+  .image-column { width: 100%; align-items:center; }
+  .image-box, .image-preview { width: 220px; height: 160px; }
+}

@@ -107,8 +107,7 @@ export class CartoesComponent implements OnInit, AfterViewInit {
    * Navega para a tela de adição de cartão.
    */
   addCard(): void {
-    console.log('Navegar para tela de adicionar cartão');
-    this.router.navigate(['/dashboard/cartoes/novo']); // Exemplo de rota
+    this.router.navigate(['/dashboard/cartoes/novo']);
   }
 
   /**

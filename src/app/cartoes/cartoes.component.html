@@ -5,8 +5,8 @@
       <mat-icon>add</mat-icon> Adicionar
     </button>
   </div>
-
-  <div class="filters-panel mat-elevation-z2" [formGroup]="filterForm"> <!-- CORREÇÃO AQUI: Adicionado [formGroup]="filterForm" -->
+  <!--Pesquisa-->
+  <div class="filters-panel mat-elevation-z2" [formGroup]="filterForm">
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>ID</mat-label>
       <input matInput formControlName="id" placeholder="Buscar por ID" />

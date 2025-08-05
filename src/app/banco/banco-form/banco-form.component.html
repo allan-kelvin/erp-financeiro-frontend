@@ -1,0 +1,88 @@
+<div class="cadastro-banco-container">
+  <mat-card class="cadastro-banco-card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="card-title">Cadastro de Banco</div>
+      <div class="header-actions">
+        <button mat-button class="btn-outline" (click)="goBack()">Voltar</button>
+        <button mat-button class="btn-primary" [disabled]="cadastroForm.invalid" (click)="onSave()">Cadastrar</button>
+        <button mat-button class="btn-danger" (click)="goBack()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Conteúdo -->
+    <mat-card-content>
+      <!-- Coluna do formulário -->
+      <div class="form-column">
+        <form [formGroup]="cadastroForm" class="cadastro-banco-form">
+
+          <!-- Campo Nome -->
+          <mat-form-field appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="nome" placeholder="Nome do Banco" />
+            <mat-error *ngIf="cadastroForm.get('nome')?.hasError('required')">
+              O nome é obrigatório
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Campo Tipo de Conta (enum) -->
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de Conta</mat-label>
+            <mat-select formControlName="tipo_banco" placeholder="Selecione o tipo de conta">
+              <mat-option *ngFor="let tipo of tipoContas" [value]="tipo">
+                {{ tipo }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="cadastroForm.get('tipo_banco')?.hasError('required')">
+              O tipo de conta é obrigatório
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Linha: exemplo de campo adicional (pode remover se preferir) -->
+          <div class="form-row">
+            <!-- (Se quiser manter um select grande, remova essa metade-width) -->
+            <div class="half-width" style="display:flex; align-items:center;">
+              <!-- Slide toggle 'ativo' -->
+              <mat-slide-toggle formControlName="ativo" aria-label="Ativo">Ativo</mat-slide-toggle>
+            </div>
+            <!-- Espaço vazio para balancear layout ou adicionar outro campo -->
+            <div class="half-width"></div>
+          </div>
+
+          <!-- Se precisar de outros campos, adicione aqui -->
+
+        </form>
+      </div>
+
+      <!-- Coluna da imagem -->
+      <div class="image-column">
+        <!-- Caixa de imagem vazia -->
+        <div *ngIf="!previewImage; else preview" class="image-box">
+          <mat-icon class="camera-icon">photo_camera</mat-icon>
+          <div style="font-size:13px; color:#0b66ff;">Adicionar Imagem</div>
+        </div>
+
+        <!-- Pré-visualização -->
+        <ng-template #preview>
+          <div class="image-preview">
+            <img [src]="previewImage" alt="Pré-visualização" />
+          </div>
+        </ng-template>
+
+        <!-- Botão selecionar -->
+        <label class="select-image-btn" for="fileInput">
+          <mat-icon style="font-size:18px">upload_file</mat-icon>
+          Selecionar Imagem
+        </label>
+        <input
+          id="fileInput"
+          type="file"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+          class="file-input"
+        />
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
