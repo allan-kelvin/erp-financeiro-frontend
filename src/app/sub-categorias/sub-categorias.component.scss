@@ -1,0 +1,165 @@
+:root {
+  --primary-color: #3FAAAA;
+  --dark-primary-color: #052D2D;
+  --text-color: #111010;
+  --light-gray-color: #ACBDBD;
+  --background-color: #f0f2f5;
+  --card-background: #ffffff;
+}
+
+.container {
+  padding: 24px;
+  background-color: var(--background-color);
+  min-height: calc(100vh - 64px); /* Ajuste conforme a altura do seu header/footer */
+}
+
+.page-title {
+  color: var(--dark-primary-color);
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 700; /* font-bold */
+  margin-bottom: 24px;
+}
+
+mat-card {
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--light-gray-color);
+}
+
+.filter-and-actions-card {
+  margin-bottom: 24px;
+}
+
+.filter-and-actions-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.filter-field {
+  flex: 1; /* Permite que os campos de filtro cresçam e ocupem o espaço disponível */
+  min-width: 200px; /* Largura mínima para os campos de filtro */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px; /* Espaçamento entre os botões */
+  /* Remove o flex-grow para que os botões não se estiquem */
+}
+
+/* Estilos para os botões */
+.search-button {
+  background-color: var(--dark-primary-color); /* Cor mais escura para o botão de buscar */
+  color: black
+}
+
+.search-button:hover {
+  background-color: #031e1e; /* Um tom ainda mais escuro no hover */
+}
+
+.clear-button {
+  background-color: var(--light-gray-color); /* Cor cinza para o botão de limpar */
+  color: var(--text-color);
+}
+
+.clear-button:hover {
+  background-color: #9aa8a8;
+}
+
+.add-button {
+  background-color: var(--primary-color); /* Cor principal para o botão de adicionar */
+  color:black;
+}
+
+.add-button:hover {
+  background-color: #2f8888;
+}
+
+
+/* Estilos para ícones de status */
+.status-active-icon {
+  color: #28a745; /* Verde para ativo */
+}
+
+.status-inactive-icon {
+  color: #dc3545; /* Vermelho para inativo */
+}
+
+/* Mensagens de Status */
+.loading-message,
+.error-message,
+.no-data-message {
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-weight: 500;
+  display: flex; /* Para alinhar spinner e texto */
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espaço entre spinner e texto */
+}
+
+.loading-message {
+  background-color: #e0f7fa; /* light cyan */
+  color: #00796b; /* dark cyan */
+}
+
+.error-message {
+  background-color: #ffebee; /* light red */
+  color: #c62828; /* dark red */
+}
+
+.no-data-message {
+  background-color: #fff3e0; /* light orange */
+  color: #e65100; /* dark orange */
+}
+
+/* Ajustes para a tabela Material */
+.mat-header-cell {
+  background-color: var(--dark-primary-color);
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.mat-row {
+  border-bottom: 1px solid var(--light-gray-color);
+}
+
+.mat-row:last-child {
+  border-bottom: none;
+}
+
+.mat-row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Centraliza o conteúdo das células de status e ações */
+.mat-column-status, .mat-column-actions {
+  text-align: center;
+}
+
+/* Ajustes para telas menores */
+@media (max-width: 768px) {
+  .filter-and-actions-content {
+    flex-direction: column; /* Empilha os itens verticalmente em telas pequenas */
+    align-items: stretch; /* Estica os itens para preencher a largura */
+  }
+
+  .filter-field {
+    width: 100%; /* Ocupa toda a largura disponível */
+    min-width: unset; /* Remove largura mínima */
+  }
+
+  .action-buttons {
+    flex-direction: column; /* Empilha os botões verticalmente */
+    width: 100%;
+  }
+
+  .action-buttons button {
+    width: 100%; /* Faz os botões ocuparem toda a largura */
+  }
+}

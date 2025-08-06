@@ -40,7 +40,6 @@ export class CartoesComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Cartao>();
   displayedColumns: string[] = ['id', 'bandeira', 'descricao', 'tipo_cartao', 'imagem_cartao', 'status', 'acoes'];
 
-  // Enums para os selects de filtro
   cardBrands = Object.values(BandeiraEnum);
   cardTypes = Object.values(TipoCartaoEnum);
   cardStatuses = Object.values(StatusCartaoEnum);
@@ -114,8 +113,7 @@ export class CartoesComponent implements OnInit, AfterViewInit {
    * @param id ID do cartão a ser editado.
    */
   editCard(id: number): void {
-    console.log('Editar cartão com ID:', id);
-    this.router.navigate(['/cartoes/editar', id]); // Exemplo de rota
+    this.router.navigate(['/dashboard/cartoes/editar', id]);
   }
 
   /**

@@ -59,26 +59,24 @@ $erp-white: #FFFFFF;
   width: 100%;
 
   .mat-mdc-form-field-flex {
-    border-radius: 9999px; // Arredonda o campo inteiro
-    background-color: $erp-white; // Fundo branco para os inputs
-    padding: 0 1rem; // Padding interno para o ícone
+    border-radius: 9999px;
+    padding: 0 1rem;
   }
 
   .mat-mdc-text-field-wrapper {
-    padding: 0 !important; // Remove padding padrão do wrapper para controlar com o flex
+    padding: 0
   }
 
   .mat-mdc-form-field-outline-start,
   .mat-mdc-form-field-outline-gap,
   .mat-mdc-form-field-outline-end {
-    border-radius: 9999px !important; // Garante que o contorno também seja arredondado
+    border-radius: 9999px
   }
 
   .mat-mdc-form-field-input-control {
-    color: #2d3748; // Cor do texto de input
+    color: #2d3748;
   }
 
-  // Cor dos ícones prefixos
   .mat-mdc-form-field-prefix .mat-icon {
     color: #a0aec0; // Cor cinza para os ícones
   }
@@ -88,32 +86,31 @@ $erp-white: #FFFFFF;
     padding-left: 1.5rem;
   }
 
-  // Ajuste do padding da label quando está flutuando (input com valor)
+
   .mat-mdc-form-field:not(.mat-form-field-no-animations).mat-form-field-outline .mat-mdc-form-field-label.mdc-floating-label--float:not(.mat-form-field-hide-placeholder) {
-    transform: translateY(-50%) scale(0.75) !important; // Ajusta a posição da label flutuante
+    transform: translateY(-50%) scale(0.75) !important;
     padding-left: 1rem;
   }
 
-  // Estilo para o campo em foco
   &.mat-focused {
     .mat-mdc-form-field-flex {
-      box-shadow: 0 0 0 2px rgba(63, 170, 170, 0.5); // Sombra ao focar
+      box-shadow: 0 0 0 2px rgba(63, 170, 170, 0.5);
     }
     .mat-mdc-form-field-outline-thick {
-      color: $erp-primary !important; // Cor do contorno ao focar
+      color: $erp-primary
     }
   }
 
   // Estilo para campo inválido
   &.mat-form-field-invalid {
     .mat-mdc-form-field-outline-thick {
-      color: #ef4444 !important; // Cor vermelha para contorno inválido
+      color: #ef4444
     }
     .mat-mdc-form-field-label {
-      color: #ef4444 !important; // Cor vermelha para label inválida
+      color: #ef4444
     }
     .input-icon-color {
-      color: #ef4444 !important; // Cor vermelha para ícone inválido
+      color: #ef4444
     }
   }
 }
@@ -134,7 +131,7 @@ $erp-white: #FFFFFF;
 
   &:disabled {
     background-color: lighten($erp-primary, 20%) !important;
-    color: $erp-white !important;
+    color: black;
     opacity: 0.7;
     cursor: not-allowed;
   }

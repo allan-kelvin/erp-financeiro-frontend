@@ -1,0 +1,41 @@
+<div class="container">
+  <h2 class="page-title">{{ isEditMode ? 'Editar Sub-Categoria' : 'Nova Sub-Categoria' }}</h2>
+
+  <mat-card class="form-card mat-elevation-z2">
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-fields-grid">
+          <!-- Campo Nome/Descrição -->
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label>Nome</mat-label>
+            <input matInput [(ngModel)]="subCategory.description" name="description" required>
+            <mat-error *ngIf="!subCategory.description">A descrição é obrigatória.</mat-error>
+          </mat-form-field>
+
+          <!-- Campo Ativo -->
+          <mat-slide-toggle [(ngModel)]="subCategory.status" name="status" color="primary" class="status-toggle">
+            Ativo
+          </mat-slide-toggle>
+        </div>
+
+        <!-- Mensagens de Status -->
+        <div *ngIf="isLoading" class="loading-message">
+          <mat-spinner [diameter]="24"></mat-spinner> Salvando...
+        </div>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+
+        <!-- Botões de Ação -->
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="button" (click)="goBack()">Voltar</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+            <mat-icon>save</mat-icon> Salvar
+          </button>
+          <button mat-raised-button color="warn" type="button" (click)="onCancel()" [disabled]="isLoading">
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
