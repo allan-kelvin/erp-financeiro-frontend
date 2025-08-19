@@ -11,7 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TipoConta } from '../enums/tipoConta.enum';
-import { IBanco } from '../interface/IBanco.interface';
+import { Banco } from '../models/banco.model';
 import { BancoService } from '../services/banco.service';
 
 @Component({
@@ -68,7 +68,7 @@ export class BancoFormComponent implements OnInit {
   private loadBanco(id: number): void {
     this.loading = true;
     this.bancoService.getById(id).subscribe({
-      next: (banco: IBanco & any) => {
+      next: (banco: Banco & any) => {
         this.loading = false;
         // Mapear: backend pode retornar tipo_conta ou tipo_banco
         const tipo = (banco.tipo_conta ?? banco.tipo_banco) ?? '';

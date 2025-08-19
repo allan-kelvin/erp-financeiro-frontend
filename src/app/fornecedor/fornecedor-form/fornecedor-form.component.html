@@ -1,0 +1,94 @@
+<!-- src/app/fornecedor/fornecedor-form/fornecedor-form.component.html -->
+<div class="container">
+  <h2 class="page-title">{{ isEditMode ? 'Editar Fornecedor' : 'Cadastrar Fornecedor' }}</h2>
+
+  <mat-card class="form-card mat-elevation-z2">
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()">
+
+        <!-- Tabs para Cadastro e Contato -->
+        <mat-tab-group animationDuration="0ms">
+          <mat-tab label="Cadastro">
+            <div class="form-fields-grid">
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>Razão Social</mat-label>
+                <input matInput [(ngModel)]="fornecedor.razaoSocial" name="razaoSocial" required>
+                <mat-error *ngIf="!fornecedor.razaoSocial">A Razão Social é obrigatória.</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>Nome Fantasia</mat-label>
+                <input matInput [(ngModel)]="fornecedor.nomeFantasia" name="nomeFantasia" required>
+                <mat-error *ngIf="!fornecedor.nomeFantasia">O Nome Fantasia é obrigatório.</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>CNPJ</mat-label>
+                <input matInput [(ngModel)]="fornecedor.cnpj" name="cnpj" required>
+                <mat-error *ngIf="!fornecedor.cnpj">O CNPJ é obrigatório.</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>IE</mat-label>
+                <input matInput [(ngModel)]="fornecedor.ie" name="ie">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>Data de Cadastro</mat-label>
+                <input matInput [matDatepicker]="picker" [ngModel]="fornecedor.dataCadastro" name="dataCadastro" disabled>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <div class="full-width-field">
+                <mat-slide-toggle [(ngModel)]="fornecedor.ativo" name="ativo" color="primary" class="status-toggle">
+                  Ativo
+                </mat-slide-toggle>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Contato">
+            <div class="form-fields-grid">
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>Telefone</mat-label>
+                <input matInput [(ngModel)]="fornecedor.telefone" name="telefone" required>
+                <mat-error *ngIf="!fornecedor.telefone">O Telefone é obrigatório.</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>WhatsApp</mat-label>
+                <input matInput [(ngModel)]="fornecedor.whatsapp" name="whatsapp">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" [(ngModel)]="fornecedor.email" name="email">
+              </mat-form-field>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+
+        <!-- Mensagens de Status -->
+        <div *ngIf="isLoading" class="loading-message">
+          <mat-spinner [diameter]="24"></mat-spinner> Salvando...
+        </div>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+
+        <!-- Botões de Ação -->
+        <div class="form-actions">
+          <button mat-raised-button class="cancel-button" type="button" (click)="onCancel()" [disabled]="isLoading">
+            <mat-icon>arrow_back</mat-icon> Voltar
+          </button>
+          <button mat-raised-button class="clear-button" type="button" (click)="fornecedor = {}" [disabled]="isLoading">
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+            <mat-icon>save</mat-icon> {{ isEditMode ? 'Atualizar' : 'Cadastrar' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

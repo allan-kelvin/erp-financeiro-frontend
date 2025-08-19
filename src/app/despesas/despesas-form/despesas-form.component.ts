@@ -15,7 +15,7 @@ import { finalize, Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { Cartao } from '../../cartoes/models/cartao.model';
 import { CartoesService } from '../../cartoes/services/cartoes.service';
-import { TipoDespesaEnum } from '../enums/TipoDespesaEnum';
+import { FormaDePagamentoEnum } from '../enums/FormaPagamentoEnum';
 import { Despesa } from '../models/despesa.model';
 import { DespesaService } from '../services/despesa.service';
 
@@ -47,8 +47,6 @@ export class DespesasFormComponent implements OnInit {
   isEditMode: boolean = false;
   despesaId: number | null = null;
   isLoading: boolean = false;
-
-  debtTypes = Object.values(TipoDespesaEnum);
   availableCards: Cartao[] = [];
   installmentOptions: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 95, 100, 120, 180, 360];
 
@@ -152,7 +150,7 @@ export class DespesasFormComponent implements OnInit {
    */
   setupConditionalFields(): void {
     this.debtForm.get('tipo_despesa')?.valueChanges.subscribe(value => {
-      if (value === TipoDespesaEnum.CARTAO) {
+      if (value === FormaDePagamentoEnum.CARTAO_CREDITO || value === FormaDePagamentoEnum.CARTAO_DEBITO) {
         this.debtForm.get('cartaoId')?.enable();
         this.debtForm.get('cartaoId')?.setValidators(Validators.required);
         this.isCardFieldEnabled = true; // Mantenha se for usado para *ngIf
@@ -250,10 +248,8 @@ export class DespesasFormComponent implements OnInit {
       next: (despesa: Despesa) => {
         this.debtForm.patchValue({
           descricao: despesa.descricao,
-          tipo_despesa: despesa.tipo_despesa,
           cartaoId: despesa.cartaoId,
           data_lancamento: despesa.data_lancamento ? new Date(despesa.data_lancamento) : null,
-          valor_total: despesa.valor_total,
           parcelado: despesa.parcelado,
           qtd_parcelas: despesa.qtd_parcelas,
           valor_parcela: despesa.valor_parcela,
@@ -261,8 +257,8 @@ export class DespesasFormComponent implements OnInit {
           data_fim_parcela: despesa.data_fim_parcela ? new Date(despesa.data_fim_parcela) : null,
         });
 
-        if (despesa.tipo_despesa === TipoDespesaEnum.CARTAO) {
-          this.debtForm.get('cartaoId')?.enable({ emitEvent: false }); // Desabilita o evento para evitar loop
+        if (despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_CREDITO || FormaDePagamentoEnum.CARTAO_DEBITO) {
+          this.debtForm.get('cartaoId')?.enable({ emitEvent: false });
         } else {
           this.debtForm.get('cartaoId')?.disable({ emitEvent: false });
         }

@@ -14,7 +14,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
 import { TipoConta } from './enums/tipoConta.enum';
-import { IBanco } from './interface/IBanco.interface';
+import { Banco } from './models/banco.model';
 import { BancoService } from './services/banco.service';
 
 @Component({
@@ -43,7 +43,7 @@ export class BancoComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['id', 'nome', 'ativo', 'acoes'];
   filterForm!: FormGroup;
-  dataSource = new MatTableDataSource<IBanco>([]);
+  dataSource = new MatTableDataSource<Banco>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   loading = false;
 
@@ -66,7 +66,7 @@ export class BancoComponent implements OnInit, AfterViewInit {
     });
 
     // filtro customizado: trata filter vazio e evita JSON.parse em string vazia
-    this.dataSource.filterPredicate = (data: IBanco, filter: string) => {
+    this.dataSource.filterPredicate = (data: Banco, filter: string) => {
       if (!filter) return true;
       let searchData: any;
       try {
@@ -133,11 +133,11 @@ export class BancoComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/dashboard/banco/novo']);
   }
 
-  onEdit(banco: IBanco): void {
+  onEdit(banco: Banco): void {
     this.router.navigate(['/dashboard/banco/editar', banco.id]);
   }
 
-  onDelete(banco: IBanco): void {
+  onDelete(banco: Banco): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Excluir Banco',

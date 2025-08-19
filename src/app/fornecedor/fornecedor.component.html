@@ -1,0 +1,100 @@
+<!-- src/app/fornecedor/fornecedor-list/fornecedor-list.component.html -->
+<div class="container">
+  <h2 class="page-title">Fornecedor</h2>
+
+  <mat-card class="filter-and-actions-card mat-elevation-z2 mb-6">
+    <mat-card-content class="filter-and-actions-content">
+      <!-- Campos de Filtro -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>ID</mat-label>
+        <input matInput type="number" placeholder="Buscar por ID" [(ngModel)]="filterId">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Nome Fantasia</mat-label>
+        <input matInput placeholder="Buscar por Nome Fantasia" [(ngModel)]="filterNomeFantasia">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>CNPJ</mat-label>
+        <input matInput placeholder="Buscar por CNPJ" [(ngModel)]="filterCnpj">
+      </mat-form-field>
+
+      <!-- Botões de Ação -->
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" class="search-button" (click)="onSearch()">
+          <mat-icon>search</mat-icon> Buscar
+        </button>
+        <button mat-raised-button class="clear-button" (click)="onClear()">
+          <mat-icon>clear</mat-icon> Limpar
+        </button>
+        <button mat-raised-button color="accent" (click)="onAdd()" class="add-button">
+          <mat-icon>add</mat-icon> Adicionar
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Mensagens de Status -->
+  <div *ngIf="isLoading" class="loading-message">
+    <mat-spinner [diameter]="24"></mat-spinner> Carregando fornecedores...
+  </div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="!isLoading && !errorMessage && dataSource.data.length === 0" class="no-data-message">
+    Nenhum fornecedor encontrado.
+  </div>
+
+  <!-- Tabela de Listagem -->
+  <mat-card *ngIf="!isLoading && !errorMessage && dataSource.data.length > 0" class="table-container mat-elevation-z2">
+    <mat-card-content class="p-0">
+      <table mat-table [dataSource]="dataSource" class="w-full">
+
+        <!-- Coluna ID -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+
+        <!-- Coluna Razão Social -->
+        <ng-container matColumnDef="razaoSocial">
+          <th mat-header-cell *matHeaderCellDef> Razão Social </th>
+          <td mat-cell *matCellDef="let element"> {{element.razaoSocial}} </td>
+        </ng-container>
+
+        <!-- Coluna CNPJ -->
+        <ng-container matColumnDef="cnpj">
+          <th mat-header-cell *matHeaderCellDef> CNPJ </th>
+          <td mat-cell *matCellDef="let element"> {{element.cnpj}} </td>
+        </ng-container>
+
+        <!-- Coluna ATIVO -->
+        <ng-container matColumnDef="ativo">
+          <th mat-header-cell *matHeaderCellDef class="text-center"> ATIVO </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <mat-icon *ngIf="element.ativo" class="status-active-icon">check_circle</mat-icon>
+            <mat-icon *ngIf="!element.ativo" class="status-inactive-icon">cancel</mat-icon>
+          </td>
+        </ng-container>
+
+        <!-- Coluna AÇÕES -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-center"> AÇÕES </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <button mat-icon-button color="accent" (click)="editFornecedor(element.id)" aria-label="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteFornecedor(element.id, element.nomeFantasia)" aria-label="Deletar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <!-- Paginação -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

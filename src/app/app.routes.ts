@@ -8,6 +8,8 @@ import { DashboardOverviewComponent } from './dashboard/dashboard-overview/dashb
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DespesasFormComponent } from './despesas/despesas-form/despesas-form.component';
 import { DespesasComponent } from './despesas/despesas.component';
+import { FornecedorFormComponent } from './fornecedor/fornecedor-form/fornecedor-form.component';
+import { FornecedorComponent } from './fornecedor/fornecedor.component';
 import { SubCategoriasFormComponent } from './sub-categorias/sub-categorias-form/sub-categorias-form.component';
 import { SubCategoriasComponent } from './sub-categorias/sub-categorias.component';
 
@@ -31,6 +33,9 @@ export const routes: Routes = [
       { path: 'sub-categorias', component: SubCategoriasComponent, data: { title: 'Sub-Categorias' } },
       { path: 'sub-categorias/novo', component: SubCategoriasFormComponent, data: { title: 'Cadastro Sub-Categoria' } },
       { path: 'sub-categorias/editar/:id', component: SubCategoriasFormComponent, data: { title: 'Editar Sub-Categoria' } },
+      { path: 'fornecedor', component: FornecedorComponent },
+      { path: 'fornecedor/novo', component: FornecedorFormComponent },
+      { path: 'fornecedor/editar/:id', component: FornecedorFormComponent },
     ]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },

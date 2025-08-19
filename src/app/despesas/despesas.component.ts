@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,10 +14,15 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { TipoCartaoEnum } from '../cartoes/enums/cartaoEnum.enum';
+import { Banco } from '../banco/models/banco.model';
+import { BancoService } from '../banco/services/banco.service';
 import { Cartao } from '../cartoes/models/cartao.model';
 import { CartoesService } from '../cartoes/services/cartoes.service';
+import { Fornecedor } from '../fornecedor/interface/fornecedor.interface';
+import { FornecedorService } from '../fornecedor/services/fornecedor.service';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
+import { SubCategoria } from '../sub-categorias/models/sub-categoria.model';
+import { SubCategoriaService } from '../sub-categorias/services/sub-categoria.service';
 import { Despesa } from './models/despesa.model';
 import { DespesaService } from './services/despesa.service';
 
@@ -39,20 +44,39 @@ import { DespesaService } from './services/despesa.service';
     MatSnackBarModule,
     MatDialogModule,
     MatProgressBarModule,
-    CurrencyPipe
+    CurrencyPipe,
+    FormsModule
   ],
   templateUrl: './despesas.component.html',
   styleUrl: './despesas.component.scss'
 })
 export class DespesasComponent implements OnInit, AfterViewInit {
 
+  consultaForm = new FormGroup({
+    grupo: new FormControl(null)
+  });
+
   filterForm!: FormGroup;
   dataSource = new MatTableDataSource<Despesa>();
-  displayedColumns: string[] = ['id', 'descricao', 'tipo_despesa', 'cartao', 'valor_total', 'parcelado', 'qtd_parcelas', 'acoes'];
+  displayedColumns: string[] = [
+    'id',
+    'descricao',
+    'subCategoria',
+    'fornecedor',
+    'banco',
+    'cartao',
+    'valor',
+    'parcelado',
+    'qtd_parcelas',
+    'acoes'
+  ];
+
   isLoading: boolean = false;
 
-  tipoDespesas = Object.values(TipoCartaoEnum);
-  availableCards: Cartao[] = []; // Lista de cartões para o select de filtro 'Cartão'
+  availableCards: Cartao[] = [];
+  availableSubCategorias: SubCategoria[] = [];
+  availableFornecedores: Fornecedor[] = [];
+  availableBancos: Banco[] = [];
   parceladoOptions = [
     { value: true, viewValue: 'Sim' },
     { value: false, viewValue: 'Não' }
@@ -66,6 +90,9 @@ export class DespesasComponent implements OnInit, AfterViewInit {
     private router: Router,
     private despesaService: DespesaService,
     private cartoesService: CartoesService,
+    private bancoService: BancoService,
+    private fornecedorService: FornecedorService,
+    private subCategoriaService: SubCategoriaService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) { }
@@ -75,12 +102,19 @@ export class DespesasComponent implements OnInit, AfterViewInit {
       id: [''],
       descricao: [''],
       tipoDespesa: [''],
-      cartaoId: [''], // ID do cartão para filtro
-      parcelado: [''] // true, false ou '' para todos
+      cartaoId: [''],
+      parcelado: [''],
+      subCategoriaId: [''],
+      fornecedorId: [''],
+      bancoId: [''],
+
     });
 
-    this.loadAvailableCards(); // Carrega os cartões disponíveis para o filtro
-    this.loadDespesas(); // Carrega as despesas ao inicializar o componente
+    this.loadAvailableCards();
+    this.loadDespesas();
+    this.loadAvailableSubCategorias();
+    this.loadAvailableFornecedores();
+    this.loadAvailableBancos();
   }
 
   ngAfterViewInit(): void {
@@ -88,9 +122,6 @@ export class DespesasComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  /**
-   * Carrega os cartões disponíveis para o select de filtro.
-   */
   loadAvailableCards(): void {
     this.cartoesService.getCartoes().subscribe({
       next: (cards) => {
@@ -98,14 +129,31 @@ export class DespesasComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         console.error('Erro ao carregar cartões para filtro:', error);
-        // Não exibe snackBar aqui para não poluir, pois é um filtro secundário
       }
     });
   }
 
-  /**
-   * Carrega as despesas do backend, aplicando filtros se houver.
-   */
+  loadAvailableSubCategorias(): void {
+    this.subCategoriaService.getSubCategoria().subscribe({
+      next: (subcats) => this.availableSubCategorias = subcats,
+      error: (error) => console.error('Erro ao carregar sub-categorias:', error)
+    });
+  }
+
+  loadAvailableFornecedores(): void {
+    this.fornecedorService.getFornecedores().subscribe({
+      next: (fornecs) => this.availableFornecedores = fornecs,
+      error: (error) => console.error('Erro ao carregar fornecedores:', error)
+    });
+  }
+
+  loadAvailableBancos(): void {
+    this.bancoService.getBancos().subscribe({
+      next: (bancos) => this.availableBancos = bancos,
+      error: (error) => console.error('Erro ao carregar bancos:', error)
+    });
+  }
+
   loadDespesas(): void {
     this.isLoading = true;
     const filters = this.filterForm.value;
@@ -129,48 +177,35 @@ export class DespesasComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /**
-   * Aplica os filtros definidos no formulário.
-   */
+
   applyFilters(): void {
     this.loadDespesas();
   }
 
-  /**
-   * Limpa os filtros do formulário e recarrega as despesas.
-   */
+
   clearFilters(): void {
     this.filterForm.reset({
       id: '',
       descricao: '',
       tipoDespesa: '',
       cartaoId: '',
-      parcelado: ''
+      parcelado: '',
+      subCategoriaId: '',
+      fornecedorId: '',
+      bancoId: ''
     });
     this.loadDespesas();
   }
 
-  /**
-   * Navega para a tela de adição de despesas.
-   */
+
   addDespesa(): void {
-    console.log('Navegar para tela de adicionar despesas');
-    this.router.navigate(['/dashboard/despesas/nova']); // Exemplo de rota
+    this.router.navigate(['/dashboard/despesas/nova']);
   }
 
-  /**
-   * Navega para a tela de edição de despesas.
-   * @param id ID da despesas a ser editada.
-   */
   editDespesa(id: number): void {
-    console.log('Editar despesas com ID:', id);
-    this.router.navigate(['/dashboard/despesas/editar', id]); // Exemplo de rota
+    this.router.navigate(['/dashboard/despesas/editar', id]);
   }
 
-  /**
-   * Exclui uma despesas após confirmação.
-   * @param id ID da despesas a ser excluída.
-   */
   deleteDespesa(id: number): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',

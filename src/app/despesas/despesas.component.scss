@@ -131,7 +131,8 @@ $erp-light-gray: #e0e0e0; // Para botões e bordas
   }
 
   .mat-row:last-child .mat-cell {
-    border-bottom: none; // Remove a borda da última linha
+    border-bottom: none;
+    text-align: center;
   }
 
   .mat-icon-button {

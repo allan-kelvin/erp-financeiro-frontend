@@ -28,11 +28,6 @@ export class DespesaService {
     return headers;
   }
 
-  /**
-   * Busca todas as despesas do usuário autenticado, com filtros opcionais.
-   * @param filters Objeto com os filtros (id, descricao, tipoDespesa, cartaoId, parcelado).
-   * @returns Um Observable com a lista de despesas.
-   */
   getDespesas(filters?: any): Observable<Despesa[]> {
     let params = new HttpParams();
     if (filters) {
@@ -49,41 +44,20 @@ export class DespesaService {
     return this.http.get<Despesa[]>(this.apiUrl, { headers: this.getAuthHeaders(), params: params });
   }
 
-  /**
-   * Busca uma despesas específica pelo ID.
-   * @param id ID da despesas.
-   * @returns Um Observable com a despesas.
-   */
   getDespesaById(id: number): Observable<Despesa> {
     return this.http.get<Despesa>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }
 
-  /**
-   * Cria uma nova despesas.
-   * @param despesa Os dados da despesas a ser criada.
-   * @returns Um Observable com a despesas criada.
-   */
   createDespesa(despesa: Despesa): Observable<Despesa> {
     // Para criar, o backend espera um objeto JSON, não FormData, a menos que haja upload de arquivo
     return this.http.post<Despesa>(this.apiUrl, despesa, { headers: this.getAuthHeaders() });
   }
 
-  /**
-   * Atualiza uma despesas existente.
-   * @param id ID da despesas a ser atualizada.
-   * @param despesa Os dados atualizados da despesas.
-   * @returns Um Observable com a despesas atualizada.
-   */
   updateDespesa(id: number, despesa: Despesa): Observable<Despesa> {
     // Para atualizar, o backend espera um objeto JSON
     return this.http.patch<Despesa>(`${this.apiUrl}/${id}`, despesa, { headers: this.getAuthHeaders() });
   }
 
-  /**
-   * Exclui uma despesas.
-   * @param id ID da despesas a ser excluída.
-   * @returns Um Observable vazio.
-   */
   deleteDespesa(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }

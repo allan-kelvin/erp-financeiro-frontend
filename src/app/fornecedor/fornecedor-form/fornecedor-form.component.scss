@@ -1,0 +1,153 @@
+/* src/app/fornecedor/fornecedor-form/fornecedor-form.component.css */
+
+:root {
+  --primary-color: #3FAAAA;
+  --dark-primary-color: #052D2D;
+  --text-color: #111010;
+  --light-gray-color: #ACBDBD;
+  --background-color: #f0f2f5;
+  --card-background: #ffffff;
+}
+
+.container {
+  padding: 24px;
+  background-color: var(--background-color);
+  min-height: calc(100vh - 64px);
+}
+
+.page-title {
+  color: var(--dark-primary-color);
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.form-card {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--light-gray-color);
+  background-color: var(--card-background);
+}
+
+/* Estilos para o grupo de abas */
+mat-tab-group {
+  margin-bottom: 20px;
+}
+
+.mat-tab-label-active {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.mat-tab-label-active .mat-tab-label-content {
+  font-weight: bold;
+}
+
+.form-fields-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.full-width-field {
+  flex: 1;
+  min-width: 250px;
+}
+
+.status-toggle {
+  margin-top: 10px;
+  color: var(--text-color);
+}
+
+.loading-message,
+.error-message,
+.success-message {
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.loading-message {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 8px 20px;
+  font-size: 1rem;
+}
+
+.mat-raised-button.mat-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.mat-raised-button.mat-primary:hover {
+  background-color: var(--dark-primary-color);
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #c82333;
+}
+
+.clear-button {
+  background-color: #ffc107;
+  color: white;
+}
+
+.clear-button:hover {
+  background-color: #e0a800;
+}
+
+@media (max-width: 600px) {
+  .form-fields-grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .full-width-field {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

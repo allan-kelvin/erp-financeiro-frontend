@@ -1,9 +1,0 @@
-export enum TipoDespesaEnum {
-  CARTAO = 'Cartão',
-  FINANCIAMENTO = 'Financiamento',
-  CONTA_FIXA = 'Conta fixa',
-  ENERGIA = 'Energia',
-  GAS = 'Gás',
-  EMPRESTIMO = 'Empréstimo',
-  OUTROS = 'Outros',
-}

@@ -20,7 +20,6 @@
           <mat-form-field appearance="outline" class="form-field-third">
             <mat-label>Tipo Despesa</mat-label>
             <mat-select formControlName="tipo_despesas">
-              <mat-option *ngFor="let type of debtTypes" [value]="type">{{ type }}</mat-option>
             </mat-select>
             <mat-error *ngIf="debtForm.get('despesas')?.invalid && debtForm.get('despesas')?.touched">
               Tipo de Despesa é obrigatório.

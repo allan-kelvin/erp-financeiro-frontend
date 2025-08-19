@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { IBanco } from '../interface/IBanco.interface';
+import { Banco } from '../models/banco.model';
 
 type CreatePayload = {
   nome: string;
@@ -21,15 +21,19 @@ export class BancoService {
 
   constructor(private http: HttpClient) { }
 
-  list(): Observable<IBanco[]> {
-    return this.http.get<IBanco[]>(this.baseUrl);
+  list(): Observable<Banco[]> {
+    return this.http.get<Banco[]>(this.baseUrl);
   }
 
-  getById(id: number): Observable<IBanco> {
-    return this.http.get<IBanco>(`${this.baseUrl}/${id}`);
+  getBancos(): Observable<Banco[]> {
+    return this.list();
   }
 
-  create(payload: CreatePayload): Observable<IBanco> {
+  getById(id: number): Observable<Banco> {
+    return this.http.get<Banco>(`${this.baseUrl}/${id}`);
+  }
+
+  create(payload: CreatePayload): Observable<Banco> {
     const form = new FormData();
     form.append('nome', payload.nome);
     form.append('tipo_conta', payload.tipo_conta);
@@ -46,11 +50,11 @@ export class BancoService {
       form.append('imagem_banco', payload.imagem, payload.imagem.name);
     }
 
-    return this.http.post<IBanco>(this.baseUrl, form);
+    return this.http.post<Banco>(this.baseUrl, form);
   }
 
 
-  update(id: number, payload: CreatePayload): Observable<IBanco> {
+  update(id: number, payload: CreatePayload): Observable<Banco> {
     const form = new FormData();
     if (payload.nome !== undefined) form.append('nome', payload.nome);
     if (payload.tipo_conta !== undefined) form.append('tipo_conta', payload.tipo_conta);
@@ -63,7 +67,7 @@ export class BancoService {
 
     if (payload.imagem) form.append('imagem_banco', payload.imagem, payload.imagem.name);
 
-    return this.http.patch<IBanco>(`${this.baseUrl}/${id}`, form);
+    return this.http.patch<Banco>(`${this.baseUrl}/${id}`, form);
   }
 
   delete(id: number): Observable<void> {

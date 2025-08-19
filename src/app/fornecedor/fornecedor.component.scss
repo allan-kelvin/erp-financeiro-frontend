@@ -1,0 +1,169 @@
+/* src/app/fornecedor/fornecedor-list/fornecedor-list.component.css */
+
+/* Paleta de Cores (se não definida globalmente) */
+:root {
+  --primary-color: #3FAAAA;
+  --dark-primary-color: #052D2D;
+  --text-color: #111010;
+  --light-gray-color: #ACBDBD;
+  --background-color: #f0f2f5;
+  --card-background: #ffffff;
+}
+
+/* Estilos de layout e tipografia que não são do Material */
+.container {
+  padding: 24px;
+  background-color: var(--background-color);
+  min-height: calc(100vh - 64px); /* Ajuste conforme a altura do seu header/footer */
+}
+
+.page-title {
+  color: var(--dark-primary-color);
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 700; /* font-bold */
+  margin-bottom: 24px;
+}
+
+/* Estilos para os cards do Material */
+mat-card {
+  border-radius: 0.375rem; /* rounded-md */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+  border: 1px solid var(--light-gray-color);
+}
+
+/* Estilos para o card de filtros e ações */
+.filter-and-actions-card {
+  margin-bottom: 24px;
+}
+
+.filter-and-actions-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 16px;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Estilos para os botões */
+.search-button {
+  background-color: var(--dark-primary-color);
+  color: white;
+}
+
+.search-button:hover {
+  background-color: #031e1e;
+}
+
+.clear-button {
+  background-color: var(--light-gray-color);
+  color: var(--text-color);
+}
+
+.clear-button:hover {
+  background-color: #9aa8a8;
+}
+
+.add-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.add-button:hover {
+  background-color: #2f8888;
+}
+
+/* Estilos para ícones de status */
+.status-active-icon {
+  color: #28a745; /* Verde para ativo */
+}
+
+.status-inactive-icon {
+  color: #dc3545; /* Vermelho para inativo */
+}
+
+/* Mensagens de Status */
+.loading-message,
+.error-message,
+.no-data-message {
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.loading-message {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.no-data-message {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+/* Ajustes para a tabela Material */
+.mat-header-cell {
+  background-color: var(--dark-primary-color);
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.mat-row {
+  border-bottom: 1px solid var(--light-gray-color);
+}
+
+.mat-row:last-child {
+  border-bottom: none;
+}
+
+.mat-row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Centraliza o conteúdo das células de status e ações */
+.mat-column-ativo, .mat-column-actions {
+  text-align: center;
+}
+
+/* Ajustes para telas menores */
+@media (max-width: 768px) {
+  .filter-and-actions-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-field {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}
