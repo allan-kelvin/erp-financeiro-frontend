@@ -6,62 +6,105 @@
   <div class="form-panel mat-elevation-z2">
     <form [formGroup]="debtForm" (ngSubmit)="onSubmit()">
       <div class="form-section">
-        <!-- Campo Descrição -->
-        <mat-form-field appearance="outline" class="full-width-field">
-          <mat-label>Descrição</mat-label>
-          <input matInput formControlName="descricao" placeholder="Ex: Mensalidade da faculdade"  id="descr"/>
-          <mat-error *ngIf="debtForm.get('descricao')?.invalid && debtForm.get('descricao')?.touched">
-            Descrição é obrigatória.
-          </mat-error>
-        </mat-form-field>
 
         <div class="form-row">
-          <!-- Campo Tipo despesa -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Tipo Despesa</mat-label>
-            <mat-select formControlName="tipo_despesas">
-            </mat-select>
-            <mat-error *ngIf="debtForm.get('despesas')?.invalid && debtForm.get('despesas')?.touched">
-              Tipo de Despesa é obrigatório.
+          <!-- Campo Descrição -->
+          <mat-form-field appearance="outline" class="full-width-field">
+            <mat-label>Descrição</mat-label>
+            <input matInput formControlName="descricao" placeholder="Ex: Mensalidade da faculdade" id="descr" />
+            <mat-error *ngIf="debtForm.get('descricao')?.invalid && debtForm.get('descricao')?.touched">
+              Descrição é obrigatória.
             </mat-error>
           </mat-form-field>
 
-          <!-- Campo Cartão (Habilitado/Desabilitado condicionalmente) -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Cartão</mat-label>
-            <mat-select formControlName="cartaoId"> <!-- REMOVIDO [disabled]="!isCardFieldEnabled" -->
-              <mat-option value="">Selecione um Cartão</mat-option>
-              <mat-option *ngFor="let card of availableCards" [value]="card.id">{{ card.descricao }}</mat-option>
+          <div class="form-row">
+            <!-- Forma de Pagamento -->
+            <mat-form-field appearance="outline" class="form-field-third">
+              <mat-label>Forma de Pagamento</mat-label>
+              <mat-select formControlName="formaPagamento">
+                <mat-option *ngFor="let option of formasPagamento" [value]="option">
+                  {{ formasPagamentoLabels[option] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Campo Data Lançamento -->
+            <mat-form-field appearance="outline" class="form-field-third">
+              <mat-label>Data Lançamento</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="data_lancamento" readonly />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Cartão -->
+            <mat-form-field appearance="outline" class="w-full" *ngIf="isCardFieldEnabled">
+              <mat-label>Cartão</mat-label>
+              <mat-select formControlName="cartaoId">
+                <mat-option *ngFor="let card of availableCards" [value]="card.id">
+                  {{ card.descricao }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Categoria -->
+            <mat-form-field appearance="outline" class="form-field-third">
+              <mat-label>Categoria</mat-label>
+              <mat-select formControlName="categoria">
+                <mat-option *ngFor="let option of categorias" [value]="option">
+                  {{ categoriasLabels[option] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- SubCategoria -->
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>SubCategoria</mat-label>
+              <mat-select formControlName="subCategoriaId">
+                <mat-option *ngFor="let sub of availableSubCategories" [value]="sub.id">
+                  {{ sub.description }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Grupo -->
+            <mat-form-field appearance="outline" class="form-field-third">
+              <mat-label>Grupo</mat-label>
+              <mat-select formControlName="grupo">
+                <mat-option *ngFor="let option of grupos" [value]="option">
+                  {{ gruposLabels[option] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Banco -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Banco</mat-label>
+            <mat-select formControlName="bancoId">
+              <mat-option *ngFor="let banco of availableBanks" [value]="banco.id">
+                {{ banco.nome }}
+              </mat-option>
             </mat-select>
-            <mat-error *ngIf="debtForm.get('cartaoId')?.invalid && debtForm.get('cartaoId')?.touched">
-              Cartão é obrigatório para despesas de 'Cartão'.
-            </mat-error>
           </mat-form-field>
 
-          <!-- Campo Data Lançamento -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Data Lançamento</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="data_lancamento" readonly />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error *ngIf="debtForm.get('data_lancamento')?.invalid && debtForm.get('data_lancamento')?.touched">
-              Data de Lançamento é obrigatória.
-            </mat-error>
+          <!-- Fornecedor -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Fornecedor</mat-label>
+            <mat-select formControlName="fornecedorId">
+              <mat-option *ngFor="let fornecedor of availableFornecedor" [value]="fornecedor.id">
+                {{ fornecedor.nomeFantasia }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
+
         </div>
 
         <div class="form-row">
           <!-- Campo Valor Total -->
           <mat-form-field appearance="outline" class="form-field-quarter">
             <mat-label>Valor Total</mat-label>
-            <input
-              matInput
-              formControlName="valor_total"
-              type="text"
-              (input)="onValorTotalInput($event)"
-              (blur)="onValorTotalBlur($event)"
-              placeholder="R$ 0,00"
-            />
+            <input matInput formControlName="valor_total" type="text" (input)="onValorTotalInput($event)"
+              (blur)="onValorTotalBlur($event)" placeholder="R$ 0,00" />
             <mat-error *ngIf="debtForm.get('valor_total')?.invalid && debtForm.get('valor_total')?.touched">
               Valor Total é obrigatório e deve ser maior que R$ 0,00.
             </mat-error>
@@ -103,7 +146,8 @@
           <!-- Campo Juros Parcelado (Calculado e Bloqueado) -->
           <mat-form-field appearance="outline" class="form-field-third">
             <mat-label>Juros Aplicado</mat-label>
-            <input matInput formControlName="juros_aplicado" [value]="debtForm.get('juros_aplicado')?.value | currency:'BRL':'symbol':'1.2-2':'pt'" readonly />
+            <input matInput formControlName="juros_aplicado"
+              [value]="debtForm.get('juros_aplicado')?.value | currency:'BRL':'symbol':'1.2-2':'pt'" readonly />
           </mat-form-field>
 
           <!-- Campo Quantidade Parcelas Restantes (Calculado e Bloqueado) -->

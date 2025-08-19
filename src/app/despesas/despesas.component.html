@@ -6,17 +6,47 @@
     </button>
   </div>
 
+  <!-- ID -->
   <div class="filters-panel mat-elevation-z2" [formGroup]="filterForm">
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>ID</mat-label>
       <input matInput formControlName="id" placeholder="Buscar por ID" />
     </mat-form-field>
 
+    <!-- Descrição -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Descrição</mat-label>
       <input matInput formControlName="descricao" placeholder="Buscar por Descrição" />
     </mat-form-field>
 
+    <!-- Grupo -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Grupo</mat-label>
+      <mat-select formControlName="grupo">
+        <mat-option value="">Todos</mat-option>
+        <mat-option *ngFor="let g of grupoOptions" [value]="g">{{ g }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Categoria -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Categoria</mat-label>
+      <mat-select formControlName="categoria">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let c of categoriaOptions" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Forma de Pagamento -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Forma de Pagamento</mat-label>
+      <mat-select formControlName="formaPagamento">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let f of formaPagamentoOptions" [value]="f">{{ f }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Sub-categoria -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Sub-categoria</mat-label>
       <mat-select formControlName="subCategoriaId">
@@ -26,6 +56,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- Fornecedor -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Fornecedor</mat-label>
       <mat-select formControlName="fornecedorId">
@@ -35,6 +66,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- BANCO -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Banco</mat-label>
       <mat-select formControlName="bancoId">
@@ -43,6 +75,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- CARTÃO -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Cartão</mat-label>
       <mat-select formControlName="cartaoId">
@@ -51,6 +84,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- PARCELADO -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Parcelado</mat-label>
       <mat-select formControlName="parcelado">
@@ -60,6 +94,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- AÇÕES -->
     <button mat-flat-button color="accent" class="search-button" (click)="applyFilters()">
       <mat-icon>search</mat-icon> Buscar
     </button>

@@ -66,9 +66,9 @@ $erp-light-background: #F9F5F5; // Fundo da página
 }
 
 .form-row {
-  display: flex;
+ display: flex;
   flex-wrap: wrap;
-  gap: 1rem; // espaçamento entre os campos
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -78,10 +78,12 @@ $erp-light-background: #F9F5F5; // Fundo da página
 
 .form-field-third {
   flex: 1 1 calc(33.33% - 1rem);
+   min-width: 250px;
 }
 
 .form-field-quarter {
   flex: 1 1 calc(25% - 1rem);
+  min-width: 200px;
 }
 
 .full-width-field {

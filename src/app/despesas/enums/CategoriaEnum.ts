@@ -1,4 +1,4 @@
 export enum CategoriaEnum {
-  ENTRADA = 'Entrada',
-  SAIDA = 'Saida',
+  ENTRADA = 0,
+  SAIDA = 1,
 }

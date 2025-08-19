@@ -13,9 +13,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { addMonths } from 'date-fns';
 import { finalize, Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
+import { Banco } from '../../banco/models/banco.model';
 import { Cartao } from '../../cartoes/models/cartao.model';
 import { CartoesService } from '../../cartoes/services/cartoes.service';
+import { Fornecedor } from '../../fornecedor/interface/fornecedor.interface';
+import { SubCategoria } from '../../sub-categorias/models/sub-categoria.model';
+import { CategoriaEnum } from '../enums/CategoriaEnum';
 import { FormaDePagamentoEnum } from '../enums/FormaPagamentoEnum';
+import { GrupoEnum } from '../enums/GrupoEnum';
 import { Despesa } from '../models/despesa.model';
 import { DespesaService } from '../services/despesa.service';
 
@@ -43,11 +48,43 @@ import { DespesaService } from '../services/despesa.service';
 })
 export class DespesasFormComponent implements OnInit {
 
+  FormaDePagamentoEnum = FormaDePagamentoEnum;
+  CategoriaEnum = CategoriaEnum;
+  GrupoEnum = GrupoEnum;
+
   debtForm!: FormGroup;
+  formasPagamento = Object.values(FormaDePagamentoEnum).filter(v => typeof v === "number");
+  categorias = Object.values(CategoriaEnum).filter(v => typeof v === "number");
+  grupos = Object.values(GrupoEnum).filter(v => typeof v === "number");
+
+  formasPagamentoLabels: { [key in FormaDePagamentoEnum]: string } = {
+    [FormaDePagamentoEnum.DINHEIRO]: 'Dinheiro',
+    [FormaDePagamentoEnum.CARTAO_DEBITO]: 'Cartão Débito',
+    [FormaDePagamentoEnum.CARTAO_CREDITO]: 'Cartão Crédito',
+    [FormaDePagamentoEnum.PIX]: 'PIX',
+    [FormaDePagamentoEnum.BOLETO]: 'Boleto',
+    [FormaDePagamentoEnum.DOC_TED]: 'DOC/TED',
+  };
+
+  categoriasLabels: { [key in CategoriaEnum]: string } = {
+    [CategoriaEnum.ENTRADA]: 'Entrada',
+    [CategoriaEnum.SAIDA]: 'Saída',
+  };
+
+  gruposLabels: { [key in GrupoEnum]: string } = {
+    [GrupoEnum.DESPESAS_FIXAS]: 'Despesas Fixas',
+    [GrupoEnum.DESPESAS_VARIAVEIS]: 'Despesas Variáveis',
+    [GrupoEnum.RECEITAS_FIXAS]: 'Receitas Fixas',
+    [GrupoEnum.RECEITAS_VARIAVEIS]: 'Receitas Variáveis',
+  };
+
   isEditMode: boolean = false;
   despesaId: number | null = null;
   isLoading: boolean = false;
   availableCards: Cartao[] = [];
+  availableBanks: Banco[] = [];
+  availableFornecedor: Fornecedor[] = [];
+  availableSubCategories: SubCategoria[] = []
   installmentOptions: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 95, 100, 120, 180, 360];
 
   isCardFieldEnabled: boolean = false;
@@ -81,7 +118,12 @@ export class DespesasFormComponent implements OnInit {
   ngOnInit(): void {
     this.debtForm = this.fb.group({
       descricao: ['', Validators.required],
-      tipo_despesa: ['', Validators.required],
+      formaPagamento: ['', Validators.required],
+      categoria: ['', Validators.required],
+      grupo: ['', Validators.required],
+      bancoId: [''],
+      fornecedorId: [''],
+      subCategoriaId: ['', Validators.required],
       cartaoId: [{ value: '', disabled: true }],
       data_lancamento: ['', Validators.required],
       valor_total: [0, [Validators.required, Validators.min(0.01)]],
@@ -96,6 +138,10 @@ export class DespesasFormComponent implements OnInit {
     this.setupConditionalFields();
     this.setupCalculatedFields();
     this.loadAvailableCards();
+    this.loadAvailableCards();
+    this.loadAvailableBanks();
+    this.loadAvailableFornecedores();
+    this.loadAvailableSubCategories();
 
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
@@ -145,11 +191,8 @@ export class DespesasFormComponent implements OnInit {
     }
   }
 
-  /**
-   * Configura a lógica para habilitar/desabilitar campos condicionalmente.
-   */
   setupConditionalFields(): void {
-    this.debtForm.get('tipo_despesa')?.valueChanges.subscribe(value => {
+    this.debtForm.get('formaPagamento')?.valueChanges.subscribe(value => {
       if (value === FormaDePagamentoEnum.CARTAO_CREDITO || value === FormaDePagamentoEnum.CARTAO_DEBITO) {
         this.debtForm.get('cartaoId')?.enable();
         this.debtForm.get('cartaoId')?.setValidators(Validators.required);
@@ -178,9 +221,6 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Configura a lógica para campos calculados (valor parcela, juros, data fim).
-   */
   setupCalculatedFields(): void {
     this.debtForm.valueChanges.subscribe(values => {
       const valorTotal = this.parseCurrency(values.valor_total);
@@ -211,20 +251,12 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Converte a string de moeda para um número.
-   * @param value String formatada como moeda (ex: "R$ 1.234,56").
-   * @returns Número (ex: 1234.56).
-   */
   parseCurrency(value: string | number): number {
     if (typeof value === 'number') return value;
     if (!value) return 0;
     return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
   }
 
-  /**
-   * Carrega os cartões disponíveis para o select de filtro.
-   */
   loadAvailableCards(): void {
     this.cartoesService.getCartoes().subscribe({
       next: (cards) => {
@@ -236,10 +268,6 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Carrega os dados da despesas para edição do backend.
-   * @param id ID da despesas a ser carregada.
-   */
   loadDespesaData(id: number): void {
     this.isLoading = true;
     this.despesasService.getDespesaById(id).pipe(
@@ -285,9 +313,27 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Envia os dados do formulário para o backend.
-   */
+  loadAvailableBanks(): void {
+    this.despesasService.getBancos().subscribe({
+      next: (banks) => this.availableBanks = banks,
+      error: (error) => console.error('Erro ao carregar bancos:', error)
+    });
+  }
+
+  loadAvailableFornecedores(): void {
+    this.despesasService.getFornecedores().subscribe({
+      next: (fornecedores) => this.availableFornecedor = fornecedores,
+      error: (error) => console.error('Erro ao carregar fornecedores:', error)
+    });
+  }
+
+  loadAvailableSubCategories(): void {
+    this.despesasService.getSubCategorias().subscribe({
+      next: (subs) => this.availableSubCategories = subs,
+      error: (error) => console.error('Erro ao carregar subcategorias:', error)
+    });
+  }
+
   onSubmit(): void {
     if (this.debtForm.invalid) {
       this.debtForm.markAllAsTouched();

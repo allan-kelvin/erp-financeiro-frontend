@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/services/auth.service';
+import { Banco } from '../../banco/models/banco.model';
+import { Fornecedor } from '../../fornecedor/interface/fornecedor.interface';
+import { SubCategoria } from '../../sub-categorias/models/sub-categoria.model';
 import { Despesa } from '../models/despesa.model';
 
 @Injectable({
@@ -46,6 +49,18 @@ export class DespesaService {
 
   getDespesaById(id: number): Observable<Despesa> {
     return this.http.get<Despesa>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
+  }
+
+  getBancos(): Observable<Banco[]> {
+    return this.http.get<Banco[]>(`${environment.apiUrl}/banco`, { headers: this.getAuthHeaders() });
+  }
+
+  getFornecedores(): Observable<Fornecedor[]> {
+    return this.http.get<Fornecedor[]>(`${environment.apiUrl}/fornecedor`, { headers: this.getAuthHeaders() });
+  }
+
+  getSubCategorias(): Observable<SubCategoria[]> {
+    return this.http.get<SubCategoria[]>(`${environment.apiUrl}/sub-categoria`, { headers: this.getAuthHeaders() });
   }
 
   createDespesa(despesa: Despesa): Observable<Despesa> {
