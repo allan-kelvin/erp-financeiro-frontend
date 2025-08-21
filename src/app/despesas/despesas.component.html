@@ -1,9 +1,6 @@
 <div class="despesas-container">
-  <div class="header">
+  <div class="header" class="titulo-maximo">
     <h1 class="title">Despesas</h1>
-    <button mat-raised-button color="primary" class="add-button" (click)="addDespesa()">
-      <mat-icon>add</mat-icon> Adicionar
-    </button>
   </div>
 
   <!-- ID -->
@@ -100,6 +97,9 @@
     </button>
     <button mat-flat-button class="clear-button" (click)="clearFilters()">
       <mat-icon>clear</mat-icon> Limpar
+    </button>
+    <button mat-raised-button color="primary" class="add-button" (click)="addDespesa()">
+      <mat-icon>add</mat-icon> Adicionar
     </button>
   </div>
 

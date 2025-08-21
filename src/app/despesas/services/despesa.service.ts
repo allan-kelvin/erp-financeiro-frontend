@@ -64,12 +64,10 @@ export class DespesaService {
   }
 
   createDespesa(despesa: Despesa): Observable<Despesa> {
-    // Para criar, o backend espera um objeto JSON, não FormData, a menos que haja upload de arquivo
     return this.http.post<Despesa>(this.apiUrl, despesa, { headers: this.getAuthHeaders() });
   }
 
   updateDespesa(id: number, despesa: Despesa): Observable<Despesa> {
-    // Para atualizar, o backend espera um objeto JSON
     return this.http.patch<Despesa>(`${this.apiUrl}/${id}`, despesa, { headers: this.getAuthHeaders() });
   }
 

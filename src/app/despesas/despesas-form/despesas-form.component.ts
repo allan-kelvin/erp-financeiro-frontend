@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addMonths } from 'date-fns';
-import { finalize, Observable } from 'rxjs';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { Banco } from '../../banco/models/banco.model';
 import { Cartao } from '../../cartoes/models/cartao.model';
@@ -53,30 +53,10 @@ export class DespesasFormComponent implements OnInit {
   GrupoEnum = GrupoEnum;
 
   debtForm!: FormGroup;
-  formasPagamento = Object.values(FormaDePagamentoEnum).filter(v => typeof v === "number");
-  categorias = Object.values(CategoriaEnum).filter(v => typeof v === "number");
-  grupos = Object.values(GrupoEnum).filter(v => typeof v === "number");
+  formasPagamento = Object.values(FormaDePagamentoEnum);
+  categorias = Object.values(CategoriaEnum);
+  grupos = Object.values(GrupoEnum);
 
-  formasPagamentoLabels: { [key in FormaDePagamentoEnum]: string } = {
-    [FormaDePagamentoEnum.DINHEIRO]: 'Dinheiro',
-    [FormaDePagamentoEnum.CARTAO_DEBITO]: 'Cartão Débito',
-    [FormaDePagamentoEnum.CARTAO_CREDITO]: 'Cartão Crédito',
-    [FormaDePagamentoEnum.PIX]: 'PIX',
-    [FormaDePagamentoEnum.BOLETO]: 'Boleto',
-    [FormaDePagamentoEnum.DOC_TED]: 'DOC/TED',
-  };
-
-  categoriasLabels: { [key in CategoriaEnum]: string } = {
-    [CategoriaEnum.ENTRADA]: 'Entrada',
-    [CategoriaEnum.SAIDA]: 'Saída',
-  };
-
-  gruposLabels: { [key in GrupoEnum]: string } = {
-    [GrupoEnum.DESPESAS_FIXAS]: 'Despesas Fixas',
-    [GrupoEnum.DESPESAS_VARIAVEIS]: 'Despesas Variáveis',
-    [GrupoEnum.RECEITAS_FIXAS]: 'Receitas Fixas',
-    [GrupoEnum.RECEITAS_VARIAVEIS]: 'Receitas Variáveis',
-  };
 
   isEditMode: boolean = false;
   despesaId: number | null = null;
@@ -118,9 +98,9 @@ export class DespesasFormComponent implements OnInit {
   ngOnInit(): void {
     this.debtForm = this.fb.group({
       descricao: ['', Validators.required],
-      formaPagamento: ['', Validators.required],
-      categoria: ['', Validators.required],
-      grupo: ['', Validators.required],
+      grupo: [null, Validators.required],
+      categoria: [null, Validators.required],
+      formaPagamento: [null, Validators.required],
       bancoId: [''],
       fornecedorId: [''],
       subCategoriaId: ['', Validators.required],
@@ -342,53 +322,60 @@ export class DespesasFormComponent implements OnInit {
     }
 
     this.isLoading = true;
-    const formData = this.debtForm.getRawValue();
+    const raw = this.debtForm.getRawValue();
 
-    if (typeof formData.valor_total === 'string') {
-      formData.valor_total = parseFloat(formData.valor_total.replace(',', '.'));
-    }
+    // valor_total -> number
+    let valorNumber = typeof raw.valor_total === 'string'
+      ? parseFloat(raw.valor_total.replace(/\./g, '').replace(',', '.'))
+      : Number(raw.valor_total || 0);
 
-    if (formData.data_lancamento instanceof Date) {
-      formData.data_lancamento = formData.data_lancamento.toISOString().split('T')[0];
-    }
+    // data -> 'YYYY-MM-DD'
+    const dataLanc = raw.data_lancamento; // Sem conversão. Enviar o objeto Date direto
 
-    // Adiciona o ID do usuário logado
+    // helper pra ids opcionais: '' -> undefined, string -> number
+    const asOptionalNumber = (v: any) => (v === '' || v === null || v === undefined) ? undefined : Number(v);
+
+    // montar payload aceito pelo back (com aliases que o DTO já entende)
+    const payload: any = {
+      descricao: raw.descricao,
+      categoria: raw.categoria,
+      grupo: raw.grupo,
+      formaDePagamento: raw.formaPagamento,
+      valor: valorNumber,
+      parcelado: !!raw.parcelado,
+      qtd_parcelas: raw.parcelado ? Number(raw.qtd_parcelas) : undefined,
+      valor_parcela: raw.parcelado ? Number(this.debtForm.get('valor_parcela')?.value || 0) : undefined,
+      juros_aplicado: Number(this.debtForm.get('juros_aplicado')?.value || 0),
+      total_com_juros: valorNumber,
+      data_lancamento: dataLanc,
+      cartaoId: asOptionalNumber(raw.cartaoId),
+      subCategoriaId: Number(raw.subCategoriaId),
+      fornecedorId: asOptionalNumber(raw.fornecedorId),
+      bancoId: asOptionalNumber(raw.bancoId),
+    };
+
     const usuarioId = this.authService.getUserId();
-    if (usuarioId) {
-      formData.usuarioId = usuarioId;
-    } else {
+    if (!usuarioId) {
       this.snackBar.open('Erro: Usuário não autenticado.', 'Fechar', { duration: 3000 });
       this.isLoading = false;
       return;
     }
+    payload.usuarioId = usuarioId;
 
-    delete formData.valor_parcela;
-    delete formData.qant_parcelas_restantes;
-    delete formData.data_fim_parcela;
+    const request$ = (this.isEditMode && this.despesaId)
+      ? this.despesasService.updateDespesa(this.despesaId, payload)
+      : this.despesasService.createDespesa(payload);
 
-    let request$: Observable<Despesa>;
-    let successMessage: string;
-    let errorMessage: string;
+    const successMessage = this.isEditMode ? 'Despesa atualizada com sucesso!' : 'Despesa cadastrada com sucesso!';
+    const errorMessage = this.isEditMode ? 'Erro ao atualizar despesa. Tente novamente.' : 'Erro ao cadastrar despesa. Tente novamente.';
 
-    if (this.isEditMode && this.despesaId) {
-      request$ = this.despesasService.updateDespesa(this.despesaId, formData);
-      successMessage = 'despesas atualizada com sucesso!';
-      errorMessage = 'Erro ao atualizar despesas. Tente novamente.';
-    } else {
-      request$ = this.despesasService.createDespesa(formData);
-      successMessage = 'despesas cadastrada com sucesso!';
-      errorMessage = 'Erro ao cadastrar despesas. Tente novamente.';
-    }
-
-    request$.pipe(
-      finalize(() => this.isLoading = false)
-    ).subscribe({
-      next: (response) => {
+    request$.pipe(finalize(() => this.isLoading = false)).subscribe({
+      next: () => {
         this.snackBar.open(successMessage, 'Fechar', { duration: 3000 });
         this.router.navigate(['/dashboard/despesas']);
       },
       error: (error) => {
-        console.error('Erro na operação da despesas:', error);
+        console.error('Erro na operação da despesa:', error);
         const backendError = error.error?.message || errorMessage;
         this.snackBar.open(backendError, 'Fechar', { duration: 5000 });
       }

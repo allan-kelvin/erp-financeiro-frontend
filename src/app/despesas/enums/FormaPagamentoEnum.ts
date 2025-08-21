@@ -1,8 +1,8 @@
 export enum FormaDePagamentoEnum {
-  DINHEIRO = 0,
-  CARTAO_DEBITO = 1,
-  CARTAO_CREDITO = 2,
-  PIX = 3,
-  BOLETO = 4,
-  DOC_TED = 5
+  CARTAO_DEBITO = 'Cartão Débito',
+  CARTAO_CREDITO = 'Cartão Crédito',
+  PIX = 'PIX',
+  DINHEIRO = 'Dinheiro',
+  BOLETO = 'Boleto',
+  DOC_TED = 'Doc/TED',
 }

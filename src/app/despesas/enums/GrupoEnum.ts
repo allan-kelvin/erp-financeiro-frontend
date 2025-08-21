@@ -1,6 +1,6 @@
 export enum GrupoEnum {
-  RECEITAS_FIXAS = 0,
-  RECEITAS_VARIAVEIS = 1,
-  DESPESAS_FIXAS = 2,
-  DESPESAS_VARIAVEIS = 3,
+  RECEITAS_FIXAS = 'Receitas fixas',
+  RECEITAS_VARIAVEIS = 'Receitas variáveis',
+  DESPESAS_FIXAS = 'Despesas fixas',
+  DESPESAS_VARIAVEIS = 'Despesas variaveis',
 }
