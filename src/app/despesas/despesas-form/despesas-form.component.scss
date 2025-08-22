@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-// Definir as cores customizadas
 $erp-white: #FFFFFF;
 $erp-light-teal: #AECCCC;
 $erp-dark-gray: #111010;
@@ -11,7 +10,9 @@ $erp-light-background: #F9F5F5; // Fundo da página
 
 :host {
   font-family: 'Inter', sans-serif;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   padding: 1.5rem;
   background-color: $erp-light-background;
   min-height: calc(100vh - 4rem - 2.5rem - 3rem);
@@ -19,26 +20,75 @@ $erp-light-background: #F9F5F5; // Fundo da página
 
 .debt-form-container {
   width: 100%;
-  max-width: 1800px;
   margin: 0 auto;
 }
 
-.header {
-  margin-bottom: 1.5rem;
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 
   .title {
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: 2.5rem;
+    font-weight: 700;
     color: $erp-dark-background;
     margin: 0;
   }
 }
 
+.form-actions-header {
+  display: flex;
+  gap: 1rem;
+
+  button {
+    min-width: 120px;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .mat-raised-button[color="primary"] {
+    background-color: $erp-primary;
+    color: $erp-white;
+
+    &:hover {
+      background-color: lighten($erp-primary, 5%);
+    }
+  }
+
+  .mat-stroked-button[color="basic"] {
+    border-color: $erp-light-teal;
+    color: $erp-dark-gray;
+    background-color: $erp-white;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .mat-stroked-button[color="warn"] {
+    border-color: #F44336;
+    color: #F44336;
+    background-color: $erp-white;
+
+    &:hover {
+      background-color: #ffebee;
+    }
+  }
+}
+
 .form-panel {
   background-color: $erp-white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 
   form {
     display: flex;
@@ -48,8 +98,11 @@ $erp-light-background: #F9F5F5; // Fundo da página
 
 .form-section {
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+  padding-bottom: 2rem;
   border-bottom: 1px solid #eee;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem; // 6 * 0.25rem = 1.5rem
 
   &:last-child {
     border-bottom: none;
@@ -62,78 +115,20 @@ $erp-light-background: #F9F5F5; // Fundo da página
     font-weight: 600;
     color: $erp-dark-background;
     margin-bottom: 1.5rem;
+    grid-column: 1 / -1; // span-full equivalent
+  }
+
+  @media (min-width: 768px) {
+    // md breakpoint
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    // lg breakpoint
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-.form-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem; // espaçamento entre os campos
-  margin-bottom: 1rem;
-}
-
-.form-field-half {
-  flex: 1 1 calc(50% - 1rem);
-}
-
-.form-field-third {
-  flex: 1 1 calc(33.33% - 1rem);
-}
-
-.form-field-quarter {
-  flex: 1 1 calc(25% - 1rem);
-}
-
-.full-width-field {
-  width: 100%;
-}
-
-mat-form-field {
-  width: 100%;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eee;
-
-  button {
-    min-width: 120px;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-    mat-icon {
-      margin-right: 0.5rem;
-    }
-  }
-
-  .mat-raised-button[color="primary"] {
-    background-color: $erp-primary;
-    color: $erp-white;
-
-    &:hover {
-      background-color: darken($erp-primary, 10%);
-    }
-  }
-
-  .mat-stroked-button[color="basic"] {
-    border-color: $erp-light-teal;
-    color: $erp-dark-gray;
-
-    &:hover {
-      background-color: #f0f0f0;
-    }
-  }
-
-  .mat-stroked-button[color="warn"] {
-    border-color: #F44336;
-    color: #F44336;
-
-    &:hover {
-      background-color: #ffebee;
-    }
-  }
+.form-field-full-width {
+  grid-column: 1 / -1; // span-full equivalent
 }

@@ -1,6 +1,6 @@
 export interface SubCategoria {
   id: number;
-  description: string;
+  descricao: string;
   status: boolean;
   createdAt: Date;
   updatedAt: Date;

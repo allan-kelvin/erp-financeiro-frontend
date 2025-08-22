@@ -103,7 +103,7 @@ export class SubCategoriasComponent implements OnInit, AfterViewInit {
   onSearch(): void {
     this.dataSource.filterPredicate = (data: SubCategoria, filter: string) => {
       const idMatch = this.filterId ? data.id === this.filterId : true;
-      const descriptionMatch = data.description.toLowerCase().includes(this.filterDescription.toLowerCase());
+      const descriptionMatch = data.descricao.toLowerCase().includes(this.filterDescription.toLowerCase());
       return idMatch && descriptionMatch;
     };
     this.dataSource.filter = 'customFilterTrigger';
@@ -151,8 +151,8 @@ export class SubCategoriasComponent implements OnInit, AfterViewInit {
     })
   }
 
-  editSubCategoria(id: number): void {
-    this.router.navigate(['/dashboard/sub-categorias/editar', id]);
+  editSubCategoria(subCategoria: SubCategoria): void {
+    this.router.navigate(['/dashboard/sub-categorias/editar', subCategoria.id]);
   }
 
   applyFilter(event: Event) {

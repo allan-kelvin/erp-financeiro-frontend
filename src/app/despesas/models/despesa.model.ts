@@ -1,6 +1,6 @@
 import { BandeiraEnum } from "../../cartoes/enums/cartaoEnum.enum";
 import { CategoriaEnum } from "../enums/CategoriaEnum";
-import { FormaDePagamentoEnum } from "../enums/FormaPagamentoEnum";
+import { FormaDePagamentoEnum } from "../enums/FormaDePagamentoEnum";
 import { GrupoEnum } from "../enums/GrupoEnum";
 
 

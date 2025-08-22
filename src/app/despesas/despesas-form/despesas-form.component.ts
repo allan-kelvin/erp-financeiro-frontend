@@ -11,11 +11,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addMonths } from 'date-fns';
-import { finalize, Observable } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
+import { Banco } from '../../banco/models/banco.model';
 import { Cartao } from '../../cartoes/models/cartao.model';
 import { CartoesService } from '../../cartoes/services/cartoes.service';
-import { FormaDePagamentoEnum } from '../enums/FormaPagamentoEnum';
+import { Fornecedor } from '../../fornecedor/interface/fornecedor.interface';
+import { SubCategoria } from '../../sub-categorias/models/sub-categoria.model';
+import { SubCategoriaService } from '../../sub-categorias/services/sub-categoria.service';
+import { CategoriaEnum } from '../enums/CategoriaEnum';
+import { FormaDePagamentoEnum } from '../enums/FormaDePagamentoEnum';
+import { GrupoEnum } from '../enums/GrupoEnum';
 import { Despesa } from '../models/despesa.model';
 import { DespesaService } from '../services/despesa.service';
 
@@ -43,11 +49,24 @@ import { DespesaService } from '../services/despesa.service';
 })
 export class DespesasFormComponent implements OnInit {
 
+  FormaDePagamentoEnum = FormaDePagamentoEnum;
+  CategoriaEnum = CategoriaEnum;
+  GrupoEnum = GrupoEnum;
+
   debtForm!: FormGroup;
+  formasPagamento = Object.values(FormaDePagamentoEnum);
+  categorias = Object.values(CategoriaEnum);
+  grupos = Object.values(GrupoEnum);
+
   isEditMode: boolean = false;
   despesaId: number | null = null;
   isLoading: boolean = false;
+
   availableCards: Cartao[] = [];
+  availableBanks: Banco[] = [];
+  availableFornecedor: Fornecedor[] = [];
+  availableSubCategoria: SubCategoria[] = [];
+
   installmentOptions: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 95, 100, 120, 180, 360];
 
   isCardFieldEnabled: boolean = false;
@@ -75,13 +94,19 @@ export class DespesasFormComponent implements OnInit {
     private cartoesService: CartoesService,
     private snackBar: MatSnackBar,
     private authService: AuthService,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private subCategoriaService: SubCategoriaService,
   ) { }
 
   ngOnInit(): void {
     this.debtForm = this.fb.group({
       descricao: ['', Validators.required],
-      tipo_despesa: ['', Validators.required],
+      grupo: [null, Validators.required],
+      categoria: [null, Validators.required],
+      formaDePagamento: [null, Validators.required],
+      bancoId: [''],
+      fornecedorId: [''],
+      subCategoriaId: ['', Validators.required],
       cartaoId: [{ value: '', disabled: true }],
       data_lancamento: ['', Validators.required],
       valor_total: [0, [Validators.required, Validators.min(0.01)]],
@@ -95,16 +120,75 @@ export class DespesasFormComponent implements OnInit {
 
     this.setupConditionalFields();
     this.setupCalculatedFields();
-    this.loadAvailableCards();
 
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
+        // --- modo edição ---
         this.isEditMode = true;
         this.despesaId = +id;
-        this.loadDespesaData(this.despesaId);
+
+        forkJoin({
+          cards: this.cartoesService.getCartoes(),
+          bancos: this.despesasService.getBancos(),
+          fornecedores: this.despesasService.getFornecedores(),
+          subs: this.subCategoriaService.getSubCategoria(),
+          despesa: this.despesasService.getDespesaById(+id)
+        }).subscribe({
+          next: (res) => {
+            this.availableCards = res.cards;
+            this.availableBanks = res.bancos;
+            this.availableFornecedor = res.fornecedores;
+            this.availableSubCategoria = res.subs;
+            this.patchDespesaForm(res.despesa);
+          },
+          error: (err) => console.error('Erro ao carregar dados para edição:', err)
+        });
+      } else {
+        // --- modo cadastro ---
+        forkJoin({
+          cards: this.cartoesService.getCartoes(),
+          bancos: this.despesasService.getBancos(),
+          fornecedores: this.despesasService.getFornecedores(),
+          subs: this.subCategoriaService.getSubCategoria(),
+        }).subscribe({
+          next: (res) => {
+            this.availableCards = res.cards;
+            this.availableBanks = res.bancos;
+            this.availableFornecedor = res.fornecedores;
+            this.availableSubCategoria = res.subs;
+          },
+          error: (err) => console.error('Erro ao carregar selects:', err)
+        });
       }
     });
+  }
+
+  patchDespesaForm(despesa: Despesa): void {
+    this.debtForm.patchValue({
+      descricao: despesa.descricao,
+      grupo: despesa.grupo,
+      categoria: despesa.categoria,
+      formaDePagamento: despesa.formaDePagamento,
+      bancoId: despesa.bancoId,
+      fornecedorId: despesa.fornecedorId,
+      subCategoriaId: despesa.subCategoriaId,
+      cartaoId: despesa.cartaoId,
+      data_lancamento: despesa.data_lancamento ? new Date(despesa.data_lancamento) : null,
+      valor_total: despesa.valor,
+      parcelado: despesa.parcelado,
+      qtd_parcelas: despesa.qtd_parcelas,
+      valor_parcela: despesa.valor_parcela,
+      juros_aplicado: despesa.juros_aplicado,
+      data_fim_parcela: despesa.data_fim_parcela ? new Date(despesa.data_fim_parcela) : null,
+    });
+
+    if (despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_CREDITO || despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_DEBITO) {
+      this.debtForm.get('cartaoId')?.enable({ emitEvent: false });
+    }
+    if (despesa.parcelado) {
+      this.debtForm.get('qtd_parcelas')?.enable({ emitEvent: false });
+    }
   }
 
   onValorTotalBlur(event: Event): void {
@@ -145,11 +229,8 @@ export class DespesasFormComponent implements OnInit {
     }
   }
 
-  /**
-   * Configura a lógica para habilitar/desabilitar campos condicionalmente.
-   */
   setupConditionalFields(): void {
-    this.debtForm.get('tipo_despesa')?.valueChanges.subscribe(value => {
+    this.debtForm.get('formaDePagamento')?.valueChanges.subscribe(value => {
       if (value === FormaDePagamentoEnum.CARTAO_CREDITO || value === FormaDePagamentoEnum.CARTAO_DEBITO) {
         this.debtForm.get('cartaoId')?.enable();
         this.debtForm.get('cartaoId')?.setValidators(Validators.required);
@@ -178,9 +259,6 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Configura a lógica para campos calculados (valor parcela, juros, data fim).
-   */
   setupCalculatedFields(): void {
     this.debtForm.valueChanges.subscribe(values => {
       const valorTotal = this.parseCurrency(values.valor_total);
@@ -211,20 +289,12 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Converte a string de moeda para um número.
-   * @param value String formatada como moeda (ex: "R$ 1.234,56").
-   * @returns Número (ex: 1234.56).
-   */
   parseCurrency(value: string | number): number {
     if (typeof value === 'number') return value;
     if (!value) return 0;
     return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
   }
 
-  /**
-   * Carrega os cartões disponíveis para o select de filtro.
-   */
   loadAvailableCards(): void {
     this.cartoesService.getCartoes().subscribe({
       next: (cards) => {
@@ -236,10 +306,6 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Carrega os dados da despesas para edição do backend.
-   * @param id ID da despesas a ser carregada.
-   */
   loadDespesaData(id: number): void {
     this.isLoading = true;
     this.despesasService.getDespesaById(id).pipe(
@@ -257,7 +323,10 @@ export class DespesasFormComponent implements OnInit {
           data_fim_parcela: despesa.data_fim_parcela ? new Date(despesa.data_fim_parcela) : null,
         });
 
-        if (despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_CREDITO || FormaDePagamentoEnum.CARTAO_DEBITO) {
+        if (
+          despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_CREDITO ||
+          despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_DEBITO
+        ) {
           this.debtForm.get('cartaoId')?.enable({ emitEvent: false });
         } else {
           this.debtForm.get('cartaoId')?.disable({ emitEvent: false });
@@ -285,9 +354,27 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Envia os dados do formulário para o backend.
-   */
+  loadAvailableBanks(): void {
+    this.despesasService.getBancos().subscribe({
+      next: (banks) => this.availableBanks = banks,
+      error: (error) => console.error('Erro ao carregar bancos:', error)
+    });
+  }
+
+  loadAvailableFornecedores(): void {
+    this.despesasService.getFornecedores().subscribe({
+      next: (fornecedores) => this.availableFornecedor = fornecedores,
+      error: (error) => console.error('Erro ao carregar fornecedores:', error)
+    });
+  }
+
+  loadAvailableSubCategoria(): void {
+    this.despesasService.getSubCategorias().subscribe({
+      next: (subs) => this.availableSubCategoria = subs,
+      error: (error) => console.error('Erro ao carregar subcategorias:', error)
+    });
+  }
+
   onSubmit(): void {
     if (this.debtForm.invalid) {
       this.debtForm.markAllAsTouched();
@@ -296,69 +383,60 @@ export class DespesasFormComponent implements OnInit {
     }
 
     this.isLoading = true;
-    const formData = this.debtForm.getRawValue();
+    const raw = this.debtForm.getRawValue();
 
-    if (typeof formData.valor_total === 'string') {
-      formData.valor_total = parseFloat(formData.valor_total.replace(',', '.'));
-    }
+    let valorNumber = typeof raw.valor_total === 'string'
+      ? parseFloat(raw.valor_total.replace(/\./g, '').replace(',', '.'))
+      : Number(raw.valor_total || 0);
 
-    if (formData.data_lancamento instanceof Date) {
-      formData.data_lancamento = formData.data_lancamento.toISOString().split('T')[0];
-    }
+    const asOptionalNumber = (v: any) => (v === '' || v === null || v === undefined) ? undefined : Number(v);
 
-    // Adiciona o ID do usuário logado
-    const usuarioId = this.authService.getUserId();
-    if (usuarioId) {
-      formData.usuarioId = usuarioId;
-    } else {
-      this.snackBar.open('Erro: Usuário não autenticado.', 'Fechar', { duration: 3000 });
-      this.isLoading = false;
-      return;
-    }
+    const payload: any = {
+      descricao: raw.descricao,
+      categoria: raw.categoria,
+      grupo: raw.grupo,
+      formaDePagamento: raw.formaDePagamento,
+      valor: valorNumber,
+      parcelado: !!raw.parcelado,
+      qtd_parcelas: raw.parcelado ? Number(raw.qtd_parcelas) : undefined,
+      valor_parcela: raw.parcelado ? Number(this.debtForm.get('valor_parcela')?.value || 0) : undefined,
+      juros_aplicado: Number(this.debtForm.get('juros_aplicado')?.value || 0),
+      total_com_juros: valorNumber,
+      data_lancamento: raw.data_lancamento,
+      cartaoId: asOptionalNumber(raw.cartaoId),
+      subCategoriaId: Number(raw.subCategoriaId),
+      fornecedorId: asOptionalNumber(raw.fornecedorId),
+      bancoId: asOptionalNumber(raw.bancoId),
+      usuarioId: this.authService.getUserId()
+    };
 
-    delete formData.valor_parcela;
-    delete formData.qant_parcelas_restantes;
-    delete formData.data_fim_parcela;
+    const request$ = (this.isEditMode && this.despesaId)
+      ? this.despesasService.updateDespesa(this.despesaId, payload)
+      : this.despesasService.createDespesa(payload);
 
-    let request$: Observable<Despesa>;
-    let successMessage: string;
-    let errorMessage: string;
+    const successMessage = this.isEditMode ? 'Despesa atualizada com sucesso!' : 'Despesa cadastrada com sucesso!';
+    const errorMessage = this.isEditMode ? 'Erro ao atualizar despesa. Tente novamente.' : 'Erro ao cadastrar despesa. Tente novamente.';
 
-    if (this.isEditMode && this.despesaId) {
-      request$ = this.despesasService.updateDespesa(this.despesaId, formData);
-      successMessage = 'despesas atualizada com sucesso!';
-      errorMessage = 'Erro ao atualizar despesas. Tente novamente.';
-    } else {
-      request$ = this.despesasService.createDespesa(formData);
-      successMessage = 'despesas cadastrada com sucesso!';
-      errorMessage = 'Erro ao cadastrar despesas. Tente novamente.';
-    }
-
-    request$.pipe(
-      finalize(() => this.isLoading = false)
-    ).subscribe({
-      next: (response) => {
+    request$.pipe(finalize(() => this.isLoading = false)).subscribe({
+      next: () => {
         this.snackBar.open(successMessage, 'Fechar', { duration: 3000 });
         this.router.navigate(['/dashboard/despesas']);
       },
       error: (error) => {
-        console.error('Erro na operação da despesas:', error);
+        console.error('Erro na operação da despesa:', error);
         const backendError = error.error?.message || errorMessage;
         this.snackBar.open(backendError, 'Fechar', { duration: 5000 });
       }
     });
   }
+  trackBySubCategoria(index: number, sub: any): number {
+    return sub.id;
+  }
 
-  /**
-   * Volta para a tela de listagem de despesass.
-   */
   goBack(): void {
     this.router.navigate(['/dashboard/despesas']);
   }
 
-  /**
-   * Cancela a operação e volta para a tela de listagem de despesass.
-   */
   cancel(): void {
     this.router.navigate(['/dashboard/despesas']);
   }

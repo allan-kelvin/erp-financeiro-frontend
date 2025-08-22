@@ -23,6 +23,9 @@ import { FornecedorService } from '../fornecedor/services/fornecedor.service';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
 import { SubCategoria } from '../sub-categorias/models/sub-categoria.model';
 import { SubCategoriaService } from '../sub-categorias/services/sub-categoria.service';
+import { CategoriaEnum } from './enums/CategoriaEnum';
+import { FormaDePagamentoEnum } from './enums/FormaDePagamentoEnum';
+import { GrupoEnum } from './enums/GrupoEnum';
 import { Despesa } from './models/despesa.model';
 import { DespesaService } from './services/despesa.service';
 
@@ -57,13 +60,18 @@ export class DespesasComponent implements OnInit, AfterViewInit {
   });
 
   filterForm!: FormGroup;
+  grupoOptions = Object.values(GrupoEnum);
+  categoriaOptions = Object.values(CategoriaEnum);
+  formaDePagamentoOptions = Object.values(FormaDePagamentoEnum);
+
   dataSource = new MatTableDataSource<Despesa>();
   displayedColumns: string[] = [
     'id',
     'descricao',
+    'grupo',
+    'categoria',
     'subCategoria',
-    'fornecedor',
-    'banco',
+    'formaDePagamento',
     'cartao',
     'valor',
     'parcelado',
@@ -101,12 +109,14 @@ export class DespesasComponent implements OnInit, AfterViewInit {
     this.filterForm = this.fb.group({
       id: [''],
       descricao: [''],
-      tipoDespesa: [''],
       cartaoId: [''],
       parcelado: [''],
       subCategoriaId: [''],
       fornecedorId: [''],
       bancoId: [''],
+      grupo: [''],
+      categoria: [''],
+      formaDePagamento: ['']
 
     });
 
@@ -164,10 +174,24 @@ export class DespesasComponent implements OnInit, AfterViewInit {
     ).subscribe({
       next: (data: Despesa[]) => {
         this.dataSource.data = data;
-        if (data.length === 0 && (filters.id || filters.descricao || filters.tipoDespesa || filters.cartaoId || filters.parcelado !== '')) {
-          this.snackBar.open('Nenhuma despesas encontrada com os filtros aplicados.', 'Fechar', { duration: 2000 });
+        if (
+          data.length === 0 &&
+          (
+            filters.id ||
+            filters.descricao ||
+            filters.cartaoId ||
+            filters.parcelado !== '' ||
+            filters.subCategoriaId ||
+            filters.fornecedorId ||
+            filters.bancoId ||
+            filters.grupo ||
+            filters.categoria ||
+            filters.formaDePagamento
+          )
+        ) {
+          this.snackBar.open('Nenhuma despesa encontrada com os filtros aplicados.', 'Fechar', { duration: 2000 });
         } else if (data.length === 0) {
-          this.snackBar.open('Nenhuma despesas cadastrada.', 'Fechar', { duration: 2000 });
+          this.snackBar.open('Nenhuma despesa cadastrada.', 'Fechar', { duration: 2000 });
         }
       },
       error: (error) => {
@@ -187,12 +211,14 @@ export class DespesasComponent implements OnInit, AfterViewInit {
     this.filterForm.reset({
       id: '',
       descricao: '',
-      tipoDespesa: '',
       cartaoId: '',
       parcelado: '',
       subCategoriaId: '',
       fornecedorId: '',
-      bancoId: ''
+      bancoId: '',
+      grupo: '',
+      categoria: '',
+      formaDePagamento: ''
     });
     this.loadDespesas();
   }

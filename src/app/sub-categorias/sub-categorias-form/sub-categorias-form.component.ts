@@ -32,8 +32,8 @@ import { SubCategoriaService } from '../services/sub-categoria.service';
 })
 export class SubCategoriasFormComponent implements OnInit {
 
-  subCategory: Partial<SubCategoria> = {
-    description: '',
+  subCategoria: Partial<SubCategoria> = {
+    descricao: '',
     status: true
   };
   isEditMode: boolean = false;
@@ -54,7 +54,7 @@ export class SubCategoriasFormComponent implements OnInit {
       this.isLoading = true;
       this.subCategoriaService.getSubCategoriaById(+id).subscribe({
         next: (data) => {
-          this.subCategory = data;
+          this.subCategoria = data;
           this.isLoading = false;
         },
         error: (err) => {
@@ -71,9 +71,9 @@ export class SubCategoriasFormComponent implements OnInit {
     this.errorMessage = null;
     this.successMessage = null;
 
-    if (this.isEditMode && this.subCategory.id) {
+    if (this.isEditMode && this.subCategoria.id) {
       // Atualizar
-      this.subCategoriaService.updateSubCategoria(this.subCategory.id, this.subCategory).subscribe({
+      this.subCategoriaService.updateSubCategoria(this.subCategoria.id, this.subCategoria).subscribe({
         next: () => {
           this.successMessage = 'Sub-categoria atualizada com sucesso!';
           this.isLoading = false;
@@ -87,11 +87,11 @@ export class SubCategoriasFormComponent implements OnInit {
         }
       });
     } else {
-      this.subCategoriaService.createSubCategoria(this.subCategory).subscribe({
+      this.subCategoriaService.createSubCategoria(this.subCategoria).subscribe({
         next: () => {
           this.successMessage = 'Sub-categoria cadastrada com sucesso!';
           this.isLoading = false;
-          this.subCategory = { description: '', status: true };
+          this.subCategoria = { descricao: '', status: true };
           setTimeout(() => this.router.navigate(['/dashboard/sub-categorias']), 2000);
         },
         error: (err) => {

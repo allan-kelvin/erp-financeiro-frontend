@@ -8,12 +8,12 @@
           <!-- Campo Nome/Descrição -->
           <mat-form-field appearance="outline" class="full-width-field">
             <mat-label>Nome</mat-label>
-            <input matInput [(ngModel)]="subCategory.description" name="description" required>
-            <mat-error *ngIf="!subCategory.description">A descrição é obrigatória.</mat-error>
+            <input matInput [(ngModel)]="subCategoria.descricao" name="description" required>
+            <mat-error *ngIf="!subCategoria.descricao">A descrição é obrigatória.</mat-error>
           </mat-form-field>
 
           <!-- Campo Ativo -->
-          <mat-slide-toggle [(ngModel)]="subCategory.status" name="status" color="primary" class="status-toggle">
+          <mat-slide-toggle [(ngModel)]="subCategoria.status" name="status" color="primary" class="status-toggle">
             Ativo
           </mat-slide-toggle>
         </div>

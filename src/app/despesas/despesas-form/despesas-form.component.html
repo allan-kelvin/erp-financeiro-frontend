@@ -1,132 +1,169 @@
+<!-- Container principal, com um layout mais limpo e espaçamento interno -->
 <div class="debt-form-container">
-  <div class="header">
+  <!-- Cabeçalho com o título e os botões de ação -->
+  <div class="form-header">
     <h1 class="title">{{ isEditMode ? 'Editar Despesa' : 'Nova Despesa' }}</h1>
+    <!-- Ações do formulário movidas para o cabeçalho -->
+    <div class="form-actions-header">
+      <button mat-stroked-button color="basic" type="button" (click)="goBack()">Voltar</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="debtForm.invalid || isLoading"
+        form="debt-form">
+        <mat-icon *ngIf="isLoading" fontIcon="hourglass_empty"></mat-icon>
+        {{ isEditMode ? 'Salvar' : 'Cadastrar' }}
+      </button>
+      <button mat-stroked-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+    </div>
   </div>
 
+  <!-- Painel do formulário com elevação e fundo branco -->
   <div class="form-panel mat-elevation-z2">
-    <form [formGroup]="debtForm" (ngSubmit)="onSubmit()">
-      <div class="form-section">
-        <!-- Campo Descrição -->
-        <mat-form-field appearance="outline" class="full-width-field">
+    <!-- Formulário reestruturado com um ID para o botão de submit no cabeçalho -->
+    <form [formGroup]="debtForm" (ngSubmit)="onSubmit()" id="debt-form">
+
+      <!-- Seção principal com os campos agrupados em colunas -->
+      <div class="form-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Campo Descrição em uma linha inteira -->
+        <mat-form-field appearance="outline" class="col-span-full">
           <mat-label>Descrição</mat-label>
-          <input matInput formControlName="descricao" placeholder="Ex: Mensalidade da faculdade"  id="descr"/>
+          <input matInput formControlName="descricao" placeholder="Ex: Mensalidade da faculdade" id="descr" />
           <mat-error *ngIf="debtForm.get('descricao')?.invalid && debtForm.get('descricao')?.touched">
             Descrição é obrigatória.
           </mat-error>
         </mat-form-field>
 
-        <div class="form-row">
-          <!-- Campo Tipo despesa -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Tipo Despesa</mat-label>
-            <mat-select formControlName="tipo_despesas">
-            </mat-select>
-            <mat-error *ngIf="debtForm.get('despesas')?.invalid && debtForm.get('despesas')?.touched">
-              Tipo de Despesa é obrigatório.
-            </mat-error>
-          </mat-form-field>
+        <!-- Agrupamento de campos de pagamento, categoria e grupo -->
+        <mat-form-field appearance="outline" class="form-field-third">
+          <mat-label>Forma de Pagamento</mat-label>
+          <mat-select formControlName="formaDePagamento" required>
+            <mat-option *ngFor="let option of formasPagamento" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="debtForm.get('formaDePagamento')?.hasError('required')">
+            Forma de pagamento é obrigatória
+          </mat-error>
+        </mat-form-field>
 
-          <!-- Campo Cartão (Habilitado/Desabilitado condicionalmente) -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Cartão</mat-label>
-            <mat-select formControlName="cartaoId"> <!-- REMOVIDO [disabled]="!isCardFieldEnabled" -->
-              <mat-option value="">Selecione um Cartão</mat-option>
-              <mat-option *ngFor="let card of availableCards" [value]="card.id">{{ card.descricao }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="debtForm.get('cartaoId')?.invalid && debtForm.get('cartaoId')?.touched">
-              Cartão é obrigatório para despesas de 'Cartão'.
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Data Lançamento</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="data_lancamento" readonly />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
 
-          <!-- Campo Data Lançamento -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Data Lançamento</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="data_lancamento" readonly />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error *ngIf="debtForm.get('data_lancamento')?.invalid && debtForm.get('data_lancamento')?.touched">
-              Data de Lançamento é obrigatória.
-            </mat-error>
-          </mat-form-field>
-        </div>
+        <mat-form-field appearance="outline" *ngIf="isCardFieldEnabled">
+          <mat-label>Cartão</mat-label>
+          <mat-select formControlName="cartaoId">
+            <mat-option *ngFor="let card of availableCards" [value]="card.id">
+              {{ card.descricao }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <div class="form-row">
-          <!-- Campo Valor Total -->
-          <mat-form-field appearance="outline" class="form-field-quarter">
-            <mat-label>Valor Total</mat-label>
-            <input
-              matInput
-              formControlName="valor_total"
-              type="text"
-              (input)="onValorTotalInput($event)"
-              (blur)="onValorTotalBlur($event)"
-              placeholder="R$ 0,00"
-            />
-            <mat-error *ngIf="debtForm.get('valor_total')?.invalid && debtForm.get('valor_total')?.touched">
-              Valor Total é obrigatório e deve ser maior que R$ 0,00.
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Categoria</mat-label>
+          <mat-select formControlName="categoria">
+            <mat-option *ngFor="let option of categorias" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          <!-- Campo Parcelado -->
-          <mat-form-field appearance="outline" class="form-field-quarter">
-            <mat-label>Parcelado</mat-label>
-            <mat-select formControlName="parcelado">
-              <mat-option [value]="true">Sim</mat-option>
-              <mat-option [value]="false">Não</mat-option>
-            </mat-select>
-            <mat-error *ngIf="debtForm.get('parcelado')?.invalid && debtForm.get('parcelado')?.touched">
-              Campo 'Parcelado' é obrigatório.
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>SubCategoria</mat-label>
+          <mat-select formControlName="subCategoriaId">
+            <mat-option *ngFor="let sub of availableSubCategoria; trackBy: trackBySubCategoria" [value]="sub.id">
+              {{ sub.descricao || sub.descricao }}
+            </mat-option>
+            <mat-option *ngIf="availableSubCategoria?.length === 0" disabled>
+              Nenhuma subcategoria cadastrada
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          <!-- Campo Quantidade Parcelas (Habilitado/Desabilitado condicionalmente) -->
-          <mat-form-field appearance="outline" class="form-field-quarter">
-            <mat-label>Quant Parcelas</mat-label>
-            <mat-select formControlName="qtd_parcelas"> <!-- REMOVIDO [disabled]="!isParcelasFieldEnabled" -->
-              <mat-option *ngFor="let num of installmentOptions" [value]="num">{{ num }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="debtForm.get('qtd_parcelas')?.invalid && debtForm.get('qtd_parcelas')?.touched">
-              Quantidade de Parcelas é obrigatória para despesas parceladas.
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="form-field-quarter">
-            <mat-label>Valor Parcelas</mat-label>
-            <input matInput [value]="debtForm.get('valor_parcela')?.value | currency:'BRL'" />
-          </mat-form-field>
-        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Grupo</mat-label>
+          <mat-select formControlName="grupo">
+            <mat-option *ngFor="let option of grupos" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Banco</mat-label>
+          <mat-select formControlName="bancoId">
+            <mat-option *ngFor="let banco of availableBanks" [value]="banco.id">
+              {{ banco.nome }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Fornecedor</mat-label>
+          <mat-select formControlName="fornecedorId">
+            <mat-option *ngFor="let fornecedor of availableFornecedor" [value]="fornecedor.id">
+              {{ fornecedor.nomeFantasia }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Agrupamento de campos de valor e parcelamento -->
+        <mat-form-field appearance="outline">
+          <mat-label>Valor</mat-label>
+          <input matInput formControlName="valor_total" type="text" (input)="onValorTotalInput($event)"
+            (blur)="onValorTotalBlur($event)" placeholder="R$ 0,00" />
+          <mat-error *ngIf="debtForm.get('valor_total')?.invalid && debtForm.get('valor_total')?.touched">
+            Valor Total é obrigatório e deve ser maior que R$ 0,00.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Parcelado</mat-label>
+          <mat-select formControlName="parcelado">
+            <mat-option [value]="true">Sim</mat-option>
+            <mat-option [value]="false">Não</mat-option>
+          </mat-select>
+          <mat-error *ngIf="debtForm.get('parcelado')?.invalid && debtForm.get('parcelado')?.touched">
+            Campo 'Parcelado' é obrigatório.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Quant Parcelas</mat-label>
+          <mat-select formControlName="qtd_parcelas">
+            <mat-option *ngFor="let num of installmentOptions" [value]="num">{{ num }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="debtForm.get('qtd_parcelas')?.invalid && debtForm.get('qtd_parcelas')?.touched">
+            Quantidade de Parcelas é obrigatória para despesas parceladas.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Valor Parcelas</mat-label>
+          <input matInput [value]="debtForm.get('valor_parcela')?.value | currency:'BRL'" readonly />
+        </mat-form-field>
       </div>
 
-      <!-- Seção Parcelado Detalhado (visível apenas se parcelado for 'Sim') -->
-      <div class="form-section" *ngIf="debtForm.get('parcelado')?.value === true">
-        <h3 class="section-title">Parcelado Detalhado</h3>
-        <div class="form-row">
-          <!-- Campo Juros Parcelado (Calculado e Bloqueado) -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Juros Aplicado</mat-label>
-            <input matInput formControlName="juros_aplicado" [value]="debtForm.get('juros_aplicado')?.value | currency:'BRL':'symbol':'1.2-2':'pt'" readonly />
-          </mat-form-field>
+      <!-- Seção Parcelado Detalhado -->
+      <div class="form-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        *ngIf="debtForm.get('parcelado')?.value === true">
+        <h3 class="section-title col-span-full">Parcelado Detalhado</h3>
+        <mat-form-field appearance="outline">
+          <mat-label>Juros Aplicado</mat-label>
+          <input matInput formControlName="juros_aplicado"
+            [value]="debtForm.get('juros_aplicado')?.value | currency:'BRL':'symbol':'1.2-2':'pt'" readonly />
+        </mat-form-field>
 
-          <!-- Campo Quantidade Parcelas Restantes (Calculado e Bloqueado) -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Quant. Parcelas Restantes</mat-label>
-            <input matInput formControlName="qant_parcelas_restantes" readonly />
-          </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Quant. Parcelas Restantes</mat-label>
+          <input matInput formControlName="qant_parcelas_restantes" readonly />
+        </mat-form-field>
 
-          <!-- Campo Última Parcela (Calculado e Bloqueado) -->
-          <mat-form-field appearance="outline" class="form-field-third">
-            <mat-label>Data Fim Parcelas</mat-label>
-            <input matInput [value]="(debtForm.get('data_fim_parcela')?.value | date:'dd/MM/yyyy') || '-'" readonly />
-          </mat-form-field>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button mat-stroked-button color="basic" type="button" (click)="goBack()">Voltar</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="debtForm.invalid || isLoading">
-          <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
-          {{ isEditMode ? 'Salvar' : 'Cadastrar' }}
-        </button>
-        <button mat-stroked-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+        <mat-form-field appearance="outline">
+          <mat-label>Data Fim Parcelas</mat-label>
+          <input matInput [value]="(debtForm.get('data_fim_parcela')?.value | date:'dd/MM/yyyy') || '-'" readonly />
+        </mat-form-field>
       </div>
     </form>
   </div>

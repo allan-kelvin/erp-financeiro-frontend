@@ -1,31 +1,60 @@
 <div class="despesas-container">
-  <div class="header">
+  <div class="header" class="titulo-maximo">
     <h1 class="title">Despesas</h1>
-    <button mat-raised-button color="primary" class="add-button" (click)="addDespesa()">
-      <mat-icon>add</mat-icon> Adicionar
-    </button>
   </div>
 
+  <!-- ID -->
   <div class="filters-panel mat-elevation-z2" [formGroup]="filterForm">
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>ID</mat-label>
       <input matInput formControlName="id" placeholder="Buscar por ID" />
     </mat-form-field>
 
+    <!-- Descrição -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Descrição</mat-label>
       <input matInput formControlName="descricao" placeholder="Buscar por Descrição" />
     </mat-form-field>
 
+    <!-- Grupo -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Grupo</mat-label>
+      <mat-select formControlName="grupo">
+        <mat-option value="">Todos</mat-option>
+        <mat-option *ngFor="let g of grupoOptions" [value]="g">{{ g }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Categoria -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Categoria</mat-label>
+      <mat-select formControlName="categoria">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let c of categoriaOptions" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Forma de Pagamento -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Forma de Pagamento</mat-label>
+      <mat-select formControlName="formaDePagamento">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let f of formaDePagamentoOptions" [value]="f">{{ f }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Sub-categoria -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Sub-categoria</mat-label>
       <mat-select formControlName="subCategoriaId">
         <mat-option value="">Todos</mat-option>
-        <mat-option *ngFor="let subcat of availableSubCategorias" [value]="subcat.id">{{ subcat.description
-          }}</mat-option>
+        <mat-option *ngFor="let subcat of availableSubCategorias" [value]="subcat.id">
+          {{ subcat.descricao || subcat.descricao }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
+    <!-- Fornecedor -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Fornecedor</mat-label>
       <mat-select formControlName="fornecedorId">
@@ -35,6 +64,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- BANCO -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Banco</mat-label>
       <mat-select formControlName="bancoId">
@@ -43,6 +73,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- CARTÃO -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Cartão</mat-label>
       <mat-select formControlName="cartaoId">
@@ -51,6 +82,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- PARCELADO -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Parcelado</mat-label>
       <mat-select formControlName="parcelado">
@@ -60,11 +92,15 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- AÇÕES -->
     <button mat-flat-button color="accent" class="search-button" (click)="applyFilters()">
       <mat-icon>search</mat-icon> Buscar
     </button>
     <button mat-flat-button class="clear-button" (click)="clearFilters()">
       <mat-icon>clear</mat-icon> Limpar
+    </button>
+    <button mat-raised-button color="primary" class="add-button" (click)="addDespesa()">
+      <mat-icon>add</mat-icon> Adicionar
     </button>
   </div>
 
@@ -82,19 +118,26 @@
         <td mat-cell *matCellDef="let element"> {{element.descricao}} </td>
       </ng-container>
 
+      <ng-container matColumnDef="grupo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Grupo </th>
+        <td mat-cell *matCellDef="let element"> {{element.grupo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="categoria">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Categoria </th>
+        <td mat-cell *matCellDef="let element"> {{element.categoria}} </td>
+      </ng-container>
+
       <ng-container matColumnDef="subCategoria">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Sub-categoria </th>
-        <td mat-cell *matCellDef="let element"> {{element.subCategoria?.descricao || 'N/A'}} </td>
+        <td mat-cell *matCellDef="let element">
+          {{ element.subCategoria?.descricao || element.subCategoria?.description || 'N/A' }}
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="fornecedor">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Fornecedor </th>
-        <td mat-cell *matCellDef="let element"> {{element.fornecedor?.nome || 'N/A'}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="banco">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Banco </th>
-        <td mat-cell *matCellDef="let element"> {{element.banco?.descricao || 'N/A'}} </td>
+      <ng-container matColumnDef="formaDePagamento">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Forma de Pagamento </th>
+        <td mat-cell *matCellDef="let element"> {{element.formaDePagamento}} </td>
       </ng-container>
 
       <ng-container matColumnDef="cartao">
@@ -120,10 +163,10 @@
       <ng-container matColumnDef="acoes">
         <th mat-header-cell *matHeaderCellDef> Ações </th>
         <td mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" (click)="editDespesa(element.id)">
+          <button mat-icon-button [ngStyle]="{'color': 'black'}" (click)="editDespesa(element.id)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteDespesa(element.id)">
+          <button mat-icon-button [ngStyle]="{'color': 'black'}" (click)="deleteDespesa(element.id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
