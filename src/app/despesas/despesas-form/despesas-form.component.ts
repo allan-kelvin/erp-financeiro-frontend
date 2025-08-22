@@ -11,15 +11,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addMonths } from 'date-fns';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { Banco } from '../../banco/models/banco.model';
 import { Cartao } from '../../cartoes/models/cartao.model';
 import { CartoesService } from '../../cartoes/services/cartoes.service';
 import { Fornecedor } from '../../fornecedor/interface/fornecedor.interface';
 import { SubCategoria } from '../../sub-categorias/models/sub-categoria.model';
+import { SubCategoriaService } from '../../sub-categorias/services/sub-categoria.service';
 import { CategoriaEnum } from '../enums/CategoriaEnum';
-import { FormaDePagamentoEnum } from '../enums/FormaPagamentoEnum';
+import { FormaDePagamentoEnum } from '../enums/FormaDePagamentoEnum';
 import { GrupoEnum } from '../enums/GrupoEnum';
 import { Despesa } from '../models/despesa.model';
 import { DespesaService } from '../services/despesa.service';
@@ -57,14 +58,15 @@ export class DespesasFormComponent implements OnInit {
   categorias = Object.values(CategoriaEnum);
   grupos = Object.values(GrupoEnum);
 
-
   isEditMode: boolean = false;
   despesaId: number | null = null;
   isLoading: boolean = false;
+
   availableCards: Cartao[] = [];
   availableBanks: Banco[] = [];
   availableFornecedor: Fornecedor[] = [];
-  availableSubCategories: SubCategoria[] = []
+  availableSubCategoria: SubCategoria[] = [];
+
   installmentOptions: number[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 95, 100, 120, 180, 360];
 
   isCardFieldEnabled: boolean = false;
@@ -92,7 +94,8 @@ export class DespesasFormComponent implements OnInit {
     private cartoesService: CartoesService,
     private snackBar: MatSnackBar,
     private authService: AuthService,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private subCategoriaService: SubCategoriaService,
   ) { }
 
   ngOnInit(): void {
@@ -100,7 +103,7 @@ export class DespesasFormComponent implements OnInit {
       descricao: ['', Validators.required],
       grupo: [null, Validators.required],
       categoria: [null, Validators.required],
-      formaPagamento: [null, Validators.required],
+      formaDePagamento: [null, Validators.required],
       bancoId: [''],
       fornecedorId: [''],
       subCategoriaId: ['', Validators.required],
@@ -117,20 +120,75 @@ export class DespesasFormComponent implements OnInit {
 
     this.setupConditionalFields();
     this.setupCalculatedFields();
-    this.loadAvailableCards();
-    this.loadAvailableCards();
-    this.loadAvailableBanks();
-    this.loadAvailableFornecedores();
-    this.loadAvailableSubCategories();
 
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
+        // --- modo edição ---
         this.isEditMode = true;
         this.despesaId = +id;
-        this.loadDespesaData(this.despesaId);
+
+        forkJoin({
+          cards: this.cartoesService.getCartoes(),
+          bancos: this.despesasService.getBancos(),
+          fornecedores: this.despesasService.getFornecedores(),
+          subs: this.subCategoriaService.getSubCategoria(),
+          despesa: this.despesasService.getDespesaById(+id)
+        }).subscribe({
+          next: (res) => {
+            this.availableCards = res.cards;
+            this.availableBanks = res.bancos;
+            this.availableFornecedor = res.fornecedores;
+            this.availableSubCategoria = res.subs;
+            this.patchDespesaForm(res.despesa);
+          },
+          error: (err) => console.error('Erro ao carregar dados para edição:', err)
+        });
+      } else {
+        // --- modo cadastro ---
+        forkJoin({
+          cards: this.cartoesService.getCartoes(),
+          bancos: this.despesasService.getBancos(),
+          fornecedores: this.despesasService.getFornecedores(),
+          subs: this.subCategoriaService.getSubCategoria(),
+        }).subscribe({
+          next: (res) => {
+            this.availableCards = res.cards;
+            this.availableBanks = res.bancos;
+            this.availableFornecedor = res.fornecedores;
+            this.availableSubCategoria = res.subs;
+          },
+          error: (err) => console.error('Erro ao carregar selects:', err)
+        });
       }
     });
+  }
+
+  patchDespesaForm(despesa: Despesa): void {
+    this.debtForm.patchValue({
+      descricao: despesa.descricao,
+      grupo: despesa.grupo,
+      categoria: despesa.categoria,
+      formaDePagamento: despesa.formaDePagamento,
+      bancoId: despesa.bancoId,
+      fornecedorId: despesa.fornecedorId,
+      subCategoriaId: despesa.subCategoriaId,
+      cartaoId: despesa.cartaoId,
+      data_lancamento: despesa.data_lancamento ? new Date(despesa.data_lancamento) : null,
+      valor_total: despesa.valor,
+      parcelado: despesa.parcelado,
+      qtd_parcelas: despesa.qtd_parcelas,
+      valor_parcela: despesa.valor_parcela,
+      juros_aplicado: despesa.juros_aplicado,
+      data_fim_parcela: despesa.data_fim_parcela ? new Date(despesa.data_fim_parcela) : null,
+    });
+
+    if (despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_CREDITO || despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_DEBITO) {
+      this.debtForm.get('cartaoId')?.enable({ emitEvent: false });
+    }
+    if (despesa.parcelado) {
+      this.debtForm.get('qtd_parcelas')?.enable({ emitEvent: false });
+    }
   }
 
   onValorTotalBlur(event: Event): void {
@@ -172,7 +230,7 @@ export class DespesasFormComponent implements OnInit {
   }
 
   setupConditionalFields(): void {
-    this.debtForm.get('formaPagamento')?.valueChanges.subscribe(value => {
+    this.debtForm.get('formaDePagamento')?.valueChanges.subscribe(value => {
       if (value === FormaDePagamentoEnum.CARTAO_CREDITO || value === FormaDePagamentoEnum.CARTAO_DEBITO) {
         this.debtForm.get('cartaoId')?.enable();
         this.debtForm.get('cartaoId')?.setValidators(Validators.required);
@@ -265,7 +323,10 @@ export class DespesasFormComponent implements OnInit {
           data_fim_parcela: despesa.data_fim_parcela ? new Date(despesa.data_fim_parcela) : null,
         });
 
-        if (despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_CREDITO || FormaDePagamentoEnum.CARTAO_DEBITO) {
+        if (
+          despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_CREDITO ||
+          despesa.formaDePagamento === FormaDePagamentoEnum.CARTAO_DEBITO
+        ) {
           this.debtForm.get('cartaoId')?.enable({ emitEvent: false });
         } else {
           this.debtForm.get('cartaoId')?.disable({ emitEvent: false });
@@ -307,9 +368,9 @@ export class DespesasFormComponent implements OnInit {
     });
   }
 
-  loadAvailableSubCategories(): void {
+  loadAvailableSubCategoria(): void {
     this.despesasService.getSubCategorias().subscribe({
-      next: (subs) => this.availableSubCategories = subs,
+      next: (subs) => this.availableSubCategoria = subs,
       error: (error) => console.error('Erro ao carregar subcategorias:', error)
     });
   }
@@ -324,43 +385,30 @@ export class DespesasFormComponent implements OnInit {
     this.isLoading = true;
     const raw = this.debtForm.getRawValue();
 
-    // valor_total -> number
     let valorNumber = typeof raw.valor_total === 'string'
       ? parseFloat(raw.valor_total.replace(/\./g, '').replace(',', '.'))
       : Number(raw.valor_total || 0);
 
-    // data -> 'YYYY-MM-DD'
-    const dataLanc = raw.data_lancamento; // Sem conversão. Enviar o objeto Date direto
-
-    // helper pra ids opcionais: '' -> undefined, string -> number
     const asOptionalNumber = (v: any) => (v === '' || v === null || v === undefined) ? undefined : Number(v);
 
-    // montar payload aceito pelo back (com aliases que o DTO já entende)
     const payload: any = {
       descricao: raw.descricao,
       categoria: raw.categoria,
       grupo: raw.grupo,
-      formaDePagamento: raw.formaPagamento,
+      formaDePagamento: raw.formaDePagamento,
       valor: valorNumber,
       parcelado: !!raw.parcelado,
       qtd_parcelas: raw.parcelado ? Number(raw.qtd_parcelas) : undefined,
       valor_parcela: raw.parcelado ? Number(this.debtForm.get('valor_parcela')?.value || 0) : undefined,
       juros_aplicado: Number(this.debtForm.get('juros_aplicado')?.value || 0),
       total_com_juros: valorNumber,
-      data_lancamento: dataLanc,
+      data_lancamento: raw.data_lancamento,
       cartaoId: asOptionalNumber(raw.cartaoId),
       subCategoriaId: Number(raw.subCategoriaId),
       fornecedorId: asOptionalNumber(raw.fornecedorId),
       bancoId: asOptionalNumber(raw.bancoId),
+      usuarioId: this.authService.getUserId()
     };
-
-    const usuarioId = this.authService.getUserId();
-    if (!usuarioId) {
-      this.snackBar.open('Erro: Usuário não autenticado.', 'Fechar', { duration: 3000 });
-      this.isLoading = false;
-      return;
-    }
-    payload.usuarioId = usuarioId;
 
     const request$ = (this.isEditMode && this.despesaId)
       ? this.despesasService.updateDespesa(this.despesaId, payload)
@@ -381,17 +429,14 @@ export class DespesasFormComponent implements OnInit {
       }
     });
   }
+  trackBySubCategoria(index: number, sub: any): number {
+    return sub.id;
+  }
 
-  /**
-   * Volta para a tela de listagem de despesass.
-   */
   goBack(): void {
     this.router.navigate(['/dashboard/despesas']);
   }
 
-  /**
-   * Cancela a operação e volta para a tela de listagem de despesass.
-   */
   cancel(): void {
     this.router.navigate(['/dashboard/despesas']);
   }

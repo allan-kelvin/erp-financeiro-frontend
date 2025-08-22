@@ -33,22 +33,29 @@ export class DespesaService {
 
   getDespesas(filters?: any): Observable<Despesa[]> {
     let params = new HttpParams();
+
     if (filters) {
       for (const key in filters) {
-        if (filters.hasOwnProperty(key) && filters[key]) {
-          let paramKey = key;
-          if (key === 'tipoDespesa') {
-            paramKey = 'tipo_despesa';
-          }
-          params = params.append(paramKey, filters[key]);
-        }
+        if (!filters.hasOwnProperty(key)) continue;
+
+        const value = filters[key];
+        if (value === null || value === undefined || value === '') continue;
+
+        let paramKey = key;
+        if (key === 'tipoDespesa') paramKey = 'tipo_despesa'; // sua exceção
+
+        params = params.append(paramKey, value);
       }
     }
-    return this.http.get<Despesa[]>(this.apiUrl, { headers: this.getAuthHeaders(), params: params });
+
+    return this.http.get<Despesa[]>(this.apiUrl, {
+      headers: this.getAuthHeaders(),
+      params
+    });
   }
 
   getDespesaById(id: number): Observable<Despesa> {
-    return this.http.get<Despesa>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
+    return this.http.get<Despesa>(`${this.apiUrl}/${id}`);
   }
 
   getBancos(): Observable<Banco[]> {

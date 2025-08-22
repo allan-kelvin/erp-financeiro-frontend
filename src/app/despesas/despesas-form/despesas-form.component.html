@@ -35,12 +35,12 @@
         <!-- Agrupamento de campos de pagamento, categoria e grupo -->
         <mat-form-field appearance="outline" class="form-field-third">
           <mat-label>Forma de Pagamento</mat-label>
-          <mat-select formControlName="formaPagamento" required>
+          <mat-select formControlName="formaDePagamento" required>
             <mat-option *ngFor="let option of formasPagamento" [value]="option">
               {{ option }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="debtForm.get('formaPagamento')?.hasError('required')">
+          <mat-error *ngIf="debtForm.get('formaDePagamento')?.hasError('required')">
             Forma de pagamento é obrigatória
           </mat-error>
         </mat-form-field>
@@ -73,8 +73,11 @@
         <mat-form-field appearance="outline">
           <mat-label>SubCategoria</mat-label>
           <mat-select formControlName="subCategoriaId">
-            <mat-option *ngFor="let sub of availableSubCategories" [value]="sub.id">
-              {{ sub.description }}
+            <mat-option *ngFor="let sub of availableSubCategoria; trackBy: trackBySubCategoria" [value]="sub.id">
+              {{ sub.descricao || sub.descricao }}
+            </mat-option>
+            <mat-option *ngIf="availableSubCategoria?.length === 0" disabled>
+              Nenhuma subcategoria cadastrada
             </mat-option>
           </mat-select>
         </mat-form-field>
